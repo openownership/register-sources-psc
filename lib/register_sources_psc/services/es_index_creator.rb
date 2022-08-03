@@ -117,7 +117,133 @@ module RegisterSourcesPsc
       def create_individual_person_index
         client.indices.create index: individual_person_index, body: {
           mappings: {
-            properties: {}
+            properties: {
+              "address": {
+                "type": "nested",
+                "properties": {
+                  "address_line_1": {
+                    "type": "keyword"
+                  },
+                  "address_line_2": {
+                    "type": "keyword"
+                  },
+                  "care_of": {
+                    "type": "keyword"
+                  },
+                  "country": {
+                    "type": "keyword"
+                  },
+                  "locality": {
+                    "type": "keyword"
+                  },
+                  "postal_code": {
+                    "type": "keyword"
+                  },
+                  "premises": {
+                    "type": "keyword"
+                  },
+                  "region": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "ceased_on": {
+                "type": "date"
+              },
+              "country_of_residence": {
+                "type": "keyword"
+              },
+              "date_of_birth": {
+                "type": "nested",
+                "properties": {
+                  "day": {
+                    "type": "integer"
+                  },
+                  "month": {
+                    "type": "integer"
+                  },
+                  "year": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "etag": {
+                "type": "text",
+                "fields": {
+                  "raw": { 
+                    "type":  "keyword"
+                  }
+                }
+              },
+              "kind": {
+                "type": "keyword"
+              },
+              "links": {
+                "type": "nested",
+                "properties": {
+                  "self": {
+                    "type": "keyword"
+                  },
+                  "statement": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "raw": { 
+                    "type":  "keyword"
+                  }
+                }
+              },
+              "name_elements": {
+                "type": "nested",
+                "properties": {
+                  "forename": {
+                    "type": "text",
+                    "fields": {
+                      "raw": { 
+                        "type":  "keyword"
+                      }
+                    }
+                  },
+                  "other_forenames": {
+                    "type": "text",
+                    "fields": {
+                      "raw": { 
+                        "type":  "keyword"
+                      }
+                    }
+                  },
+                  "surname": {
+                    "type": "text",
+                    "fields": {
+                      "raw": { 
+                        "type":  "keyword"
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "text",
+                    "fields": {
+                      "raw": { 
+                        "type":  "keyword"
+                      }
+                    }
+                  }
+                }
+              },
+              "nationality": {
+                "type": "keyword"
+              },
+              "natures_of_control": {
+                "type": "keyword", # array
+              },
+              "notified_on": {
+                "type": "date"
+              },
+            }
           }
         }
       end

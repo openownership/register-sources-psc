@@ -1,12 +1,12 @@
 require 'digest'
 require 'json'
 require 'register_sources_psc/config/elasticsearch'
-require 'register_sources_psc/structs/individual_person'
+require 'register_sources_psc/structs/individual'
 require 'active_support/core_ext/hash/indifferent_access'
 
 module RegisterSourcesPsc
   module Repositories
-    class CorporateEntityRepository
+    class IndividualPersonRepository
       SearchResult = Struct.new(:record, :score)
 
       def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_INDIVIDUAL_PERSON_INDEX)
@@ -19,7 +19,9 @@ module RegisterSourcesPsc
           client.search(
             index: index,
             body: {
-              query: {}
+              query: {
+                bool: {}
+              }
             }
           )
         )
@@ -51,7 +53,7 @@ module RegisterSourcesPsc
       attr_reader :client, :index
 
       def calculate_id(record)
-        "#{record.jurisdiction_code}:#{record.company_number}"
+        "#{record.nationality}" # TODO: use etag
       end
 
       def process_results(results)
@@ -62,7 +64,7 @@ module RegisterSourcesPsc
           source = JSON.parse(hit['_source'].to_json, symbolize_names: true)
 
           SearchResult.new(
-            IndividualPerson.new(**source),
+            Individual.new(**source),
             hit['_score']
           )
         end

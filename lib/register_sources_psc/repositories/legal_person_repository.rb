@@ -19,7 +19,9 @@ module RegisterSourcesPsc
           client.search(
             index: index,
             body: {
-              query: {}
+              query: {
+                bool: {}
+              }
             }
           )
         )
