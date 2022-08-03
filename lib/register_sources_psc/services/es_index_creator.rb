@@ -8,13 +8,15 @@ module RegisterSourcesPsc
         corporate_entity_index: Config::ES_CORPORATE_ENTITY_INDEX,
         individual_person_index: Config::ES_INDIVIDUAL_PERSON_INDEX,
         legal_person_index: Config::ES_LEGAL_PERSON_INDEX,
-        psc_statement_index: Config::ES_PSC_STATEMENT_INDEX
+        psc_statement_index: Config::ES_PSC_STATEMENT_INDEX,
+        super_secure_index: Config::ES_SUPER_SECURE_INDEX
       )
         @client = client
         @corporate_entity_index = corporate_entity_index
         @individual_person_index = individual_person_index
         @legal_person_index = legal_person_index
         @psc_statement_index = psc_statement_index
+        @super_secure_index = super_secure_index
       end
 
       def create_corporate_entity_index
@@ -386,9 +388,41 @@ module RegisterSourcesPsc
         }
       end
 
+      def create_super_secure_index
+        client.indices.create index: super_secure_index, body: {
+          mappings: {
+            properties: {
+              "ceased": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "keyword"
+              },
+              "etag": {
+                "type": "keyword"
+              },
+              "kind": {
+                "type": "keyword"
+              },
+              "links": {
+                "type": "nested",
+                "properties": {
+                  "self": {
+                    "type": "keyword"
+                  },
+                  "statement": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          }
+        }
+      end
+
       private
 
-      attr_reader :client, :psc_statement_index, :corporate_entity_index, :individual_person_index, :legal_person_index
+      attr_reader :client, :psc_statement_index, :corporate_entity_index, :individual_person_index, :legal_person_index, :super_secure_index
     end
   end
 end

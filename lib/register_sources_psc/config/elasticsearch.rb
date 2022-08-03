@@ -16,5 +16,6 @@ module RegisterSourcesPsc
     ES_INDIVIDUAL_PERSON_INDEX = 'ukpsc_individual_persons'
     ES_LEGAL_PERSON_INDEX = 'ukpsc_legal_persons'
     ES_PSC_STATEMENT_INDEX = 'ukpsc_statements'
+    ES_SUPER_SECURE_INDEX = 'ukpsc_super_secure'
   end
 end
