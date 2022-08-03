@@ -1,3 +1,5 @@
+require 'register_sources_psc/types'
+
 module RegisterSourcesPsc
   class NameElements < Dry::Struct
     attribute :forename, Types::String.optional.default(nil)

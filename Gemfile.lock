@@ -7,6 +7,7 @@ PATH
       dotenv
       dry-struct (~> 1.4.0)
       dry-types (~> 1.5.1)
+      elasticsearch (~> 7.10.1)
       faraday
       faraday_middleware
       geokit
@@ -59,6 +60,14 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
+    elasticsearch (7.10.1)
+      elasticsearch-api (= 7.10.1)
+      elasticsearch-transport (= 7.10.1)
+    elasticsearch-api (7.10.1)
+      multi_json
+    elasticsearch-transport (7.10.1)
+      faraday (~> 1)
+      multi_json
     faraday (1.10.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -92,6 +101,7 @@ GEM
     ice_nine (0.11.2)
     iso8601 (0.13.0)
     minitest (5.15.0)
+    multi_json (1.15.0)
     multipart-post (2.1.1)
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)

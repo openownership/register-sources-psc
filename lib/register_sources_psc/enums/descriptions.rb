@@ -1,3 +1,5 @@
+require 'register_sources_psc/types'
+
 module RegisterSourcesPsc
   Descriptions = Types::String.enum(
     'ownership-of-shares-25-to-50-percent', # "The person holds, directly or indirectly, more than 25% but not more than 50% of the shares in the company."

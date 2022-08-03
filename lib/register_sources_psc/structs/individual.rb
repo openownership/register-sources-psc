@@ -1,3 +1,5 @@
+require 'register_sources_psc/types'
+
 require 'register_sources_psc/enums/descriptions'
 require 'register_sources_psc/enums/individual_kinds'
 require 'register_sources_psc/structs/address'

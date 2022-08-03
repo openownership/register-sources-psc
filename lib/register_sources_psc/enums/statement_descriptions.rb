@@ -1,3 +1,5 @@
+require 'register_sources_psc/types'
+
 module RegisterSourcesPsc
   StatementDescriptions = Types::String.enum(
     'no-individual-or-entity-with-signficant-control', # "The company knows or has reasonable cause to believe that there is no registrable person or registrable relevant legal entity in relation to the company"

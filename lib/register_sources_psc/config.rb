@@ -8,9 +8,6 @@ require 'json'
 require 'dotenv'
 Dotenv.load('.env')
 
-require 'dry-types'
-require 'dry-struct'
-
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/time'
@@ -23,13 +20,7 @@ Time.zone='UTC'
 ActiveSupport::JSON::Encoding.use_standard_json_time_format = true
 ActiveSupport::JSON::Encoding.escape_html_entities_in_json = true
 
-module RegisterSourcesPsc
-  module Types
-    include Dry.Types()
-  end
+require 'register_sources_psc/types'
 
-  Secrets = Struct.new(:psc_stream_api_key)
-  SECRETS = Secrets.new(
-    ENV.fetch('PSC_STREAM_API_KEY')
-  )
+module RegisterSourcesPsc
 end

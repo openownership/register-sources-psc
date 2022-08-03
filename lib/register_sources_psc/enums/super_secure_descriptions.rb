@@ -1,3 +1,5 @@
+require 'register_sources_psc/types'
+
 module RegisterSourcesPsc
   # Note: only super-secure-persons-with-significant-control seems allowed?
   SuperSecureDescriptions = Types::String.enum(

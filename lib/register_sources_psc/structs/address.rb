@@ -1,3 +1,5 @@
+require 'register_sources_psc/types'
+
 module RegisterSourcesPsc
   class Address < Dry::Struct
     attribute :address_line_1, Types::String.optional.default(nil)
