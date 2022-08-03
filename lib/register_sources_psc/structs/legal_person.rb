@@ -8,14 +8,14 @@ require 'register_sources_psc/structs/links'
 
 module RegisterSourcesPsc
   class LegalPerson < Dry::Struct
-    attribute :address, Address
+    attribute :address, Address.optional.default(nil)
     attribute :ceased_on, Types::Nominal::Date.optional.default(nil)
     attribute :etag, Types::String.optional.default(nil)
-    attribute :identification, Identification
-    attribute :kind, LegalPersonKinds
-    attribute :links, Links
-    attribute :name, Types::String
-    attribute :natures_of_control, Types.Array(Descriptions)
-    attribute :notified_on, Types::Nominal::Date
+    attribute :identification, Identification.optional.default(nil)
+    attribute :kind, LegalPersonKinds.optional.default(nil)
+    attribute :links, Links.optional.default(nil)
+    attribute :name, Types::String.optional.default(nil)
+    attribute :natures_of_control, Types.Array(Descriptions).default([])
+    attribute :notified_on, Types::Nominal::Date.optional.default(nil)
   end
 end

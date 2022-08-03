@@ -251,7 +251,91 @@ module RegisterSourcesPsc
       def create_legal_person_index
         client.indices.create index: legal_person_index, body: {
           mappings: {
-            properties: {}
+            properties: {
+              "address": {
+                "type": "nested",
+                "properties": {
+                  "address_line_1": {
+                    "type": "keyword"
+                  },
+                  "address_line_2": {
+                    "type": "keyword"
+                  },
+                  "care_of": {
+                    "type": "keyword"
+                  },
+                  "country": {
+                    "type": "keyword"
+                  },
+                  "locality": {
+                    "type": "keyword"
+                  },
+                  "postal_code": {
+                    "type": "keyword"
+                  },
+                  "premises": {
+                    "type": "keyword"
+                  },
+                  "region": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "ceased_on": {
+                "type": "date"
+              },
+              "etag": {
+                "type": "keyword"
+              },
+              "identification": {
+                "type": "nested",
+                "properties": {
+                  "country_registered": {
+                    "type": "keyword"
+                  },
+                  "legal_authority": {
+                    "type": "keyword"
+                  },
+                  "legal_form": {
+                    "type": "keyword"
+                  },
+                  "place_registered": {
+                    "type": "keyword"
+                  },
+                  "registration_number": {
+                    "type": "keyword"
+                  },
+                }
+              },
+              "kind": {
+                "type": "keyword"
+              },
+              "links": {
+                "type": "nested",
+                "properties": {
+                  "self": {
+                    "type": "keyword"
+                  },
+                  "statement": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "raw": { 
+                    "type":  "keyword"
+                  }
+                }
+              },
+              "natures_of_control": {
+                "type": "keyword", # array
+              },
+              "notified_on": {
+                "type": "date"
+              },
+            }
           }
         }
       end

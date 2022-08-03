@@ -53,7 +53,7 @@ module RegisterSourcesPsc
       attr_reader :client, :index
 
       def calculate_id(record)
-        "#{record.jurisdiction_code}:#{record.company_number}"
+        "#{record.name}"
       end
 
       def process_results(results)
