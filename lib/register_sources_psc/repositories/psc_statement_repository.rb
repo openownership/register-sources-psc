@@ -6,7 +6,7 @@ require 'active_support/core_ext/hash/indifferent_access'
 
 module RegisterSourcesPsc
   module Repositories
-    class StatementRepository
+    class PscStatementRepository
       SearchResult = Struct.new(:record, :score)
 
       def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_PSC_STATEMENT_INDEX)
@@ -53,7 +53,7 @@ module RegisterSourcesPsc
       attr_reader :client, :index
 
       def calculate_id(record)
-        "#{record.jurisdiction_code}:#{record.company_number}"
+        "#{record.kind}" # TODO: use etag
       end
 
       def process_results(results)

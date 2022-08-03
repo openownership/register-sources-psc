@@ -343,7 +343,45 @@ module RegisterSourcesPsc
       def create_psc_statement_index
         client.indices.create index: psc_statement_index, body: {
           mappings: {
-            properties: {}
+            properties: {
+              "ceased_on": {
+                "type": "date"
+              },
+              "etag": {
+                "type": "keyword"
+              },
+              "kind": {
+                "type": "keyword"
+              },
+              "linked_psc_name": {
+                "type": "text",
+                "fields": {
+                  "raw": { 
+                    "type":  "keyword"
+                  }
+                }
+              },
+              "links": {
+                "type": "nested",
+                "properties": {
+                  "self": {
+                    "type": "keyword"
+                  },
+                  "statement": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "notified_on": {
+                "type": "date"
+              },
+              "restrictions_notice_withdrawal_reason": {
+                "type": "keyword"
+              },
+              "statement": {
+                "type": "keyword"
+              },
+            }
           }
         }
       end
