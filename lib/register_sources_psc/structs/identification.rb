@@ -2,6 +2,8 @@ require 'register_sources_psc/types'
 
 module RegisterSourcesPsc
   class Identification < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :country_registered, Types::String.optional.default(nil)
     attribute :legal_authority, Types::String.optional.default(nil)
     attribute :legal_form, Types::String.optional.default(nil)

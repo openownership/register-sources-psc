@@ -1,15 +1,24 @@
+require 'active_support/core_ext/hash/indifferent_access'
 require 'digest'
 require 'json'
+
 require 'register_sources_psc/config/elasticsearch'
+require 'register_sources_psc/structs/company_record'
+require 'register_sources_psc/structs/corporate_entity'
+require 'register_sources_psc/structs/individual'
+require 'register_sources_psc/structs/legal_person'
 require 'register_sources_psc/structs/statement'
-require 'active_support/core_ext/hash/indifferent_access'
+require 'register_sources_psc/structs/super_secure'
 
 module RegisterSourcesPsc
   module Repositories
-    class PscStatementRepository
+    class CompanyRecordRepository      
+      UnknownRecordKindError = Class.new(StandardError)
+      ElasticsearchError = Class.new(StandardError)
+
       SearchResult = Struct.new(:record, :score)
 
-      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_PSC_STATEMENT_INDEX)
+      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_COMPANY_RECORD_INDEX)
         @client = client
         @index = index
       end
@@ -41,8 +50,7 @@ module RegisterSourcesPsc
         result = client.bulk(body: operations)
 
         if result['errors']
-          print result, "\n\n"
-          raise 'error'
+          raise ElasticsearchError, errors: result['errors']
         end
 
         result
@@ -53,7 +61,7 @@ module RegisterSourcesPsc
       attr_reader :client, :index
 
       def calculate_id(record)
-        "#{record.kind}" # TODO: use etag
+        "#{record.company_number}:#{record.data.etag}"
       end
 
       def process_results(results)
@@ -63,13 +71,14 @@ module RegisterSourcesPsc
         mapped = hits.map do |hit|
           source = JSON.parse(hit['_source'].to_json, symbolize_names: true)
 
-          SearchResult.new(
-            Statement.new(**source),
-            hit['_score']
-          )
+          SearchResult.new(map_es_record(source), hit['_score'])
         end
 
         mapped.sort_by(&:score).reverse
+      end
+
+      def map_es_record(record)
+        CompanyRecord.new(record)
       end
     end
   end

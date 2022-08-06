@@ -8,6 +8,8 @@ require 'register_sources_psc/structs/links'
 
 module RegisterSourcesPsc
   class LegalPerson < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :address, Address.optional.default(nil)
     attribute :ceased_on, Types::Nominal::Date.optional.default(nil)
     attribute :etag, Types::String.optional.default(nil)

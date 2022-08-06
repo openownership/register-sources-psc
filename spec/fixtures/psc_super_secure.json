@@ -1,6 +1,7 @@
 {
   "company_number": "1234567",
   "data": {
+    "etag": "36c99208e0c14294355583c965e4c3a0",
     "description": "super-secure-persons-with-significant-control",
     "kind": "super-secure-person-with-significant-control",
     "links": {

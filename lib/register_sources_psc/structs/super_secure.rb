@@ -6,6 +6,8 @@ require 'register_sources_psc/structs/links'
 
 module RegisterSourcesPsc
   class SuperSecure < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :ceased, Types::Nominal::Bool.optional.default(nil)
     attribute :description, SuperSecureDescriptions.optional.default(nil)
     attribute :etag, Types::String.optional.default(nil)

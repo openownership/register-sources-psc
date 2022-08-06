@@ -9,6 +9,8 @@ require 'register_sources_psc/structs/name_elements'
 
 module RegisterSourcesPsc
   class Individual < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :address, Address.optional.default(nil)
     attribute :ceased_on, Types::Nominal::Date.optional.default(nil)
     attribute :country_of_residence, Types::String.optional.default(nil)

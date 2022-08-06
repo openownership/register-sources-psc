@@ -1,6 +1,7 @@
 {
   "company_number": "1234567",
   "data": {
+    "etag": "36c99208e0c14294355583c965e4c3f2",
     "exemptions": {
       "psc_exempt_as_shares_admitted_on_market": {
         "exemption_type": "psc-exempt-as-shares-admitted-on-market",
