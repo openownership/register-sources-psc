@@ -1,8 +1,5 @@
-require 'active_support/core_ext/hash/indifferent_access'
-require 'digest'
-require 'json'
-
 require 'register_sources_psc/config/elasticsearch'
+
 require 'register_sources_psc/structs/company_record'
 require 'register_sources_psc/structs/corporate_entity'
 require 'register_sources_psc/structs/individual'
@@ -109,9 +106,7 @@ module RegisterSourcesPsc
         hits = hits.sort { |hit| hit['_score'] }.reverse
 
         mapped = hits.map do |hit|
-          source = JSON.parse(hit['_source'].to_json, symbolize_names: true)
-
-          SearchResult.new(map_es_record(source), hit['_score'])
+          SearchResult.new(map_es_record(hit['_source']), hit['_score'])
         end
 
         mapped.sort_by(&:score).reverse
