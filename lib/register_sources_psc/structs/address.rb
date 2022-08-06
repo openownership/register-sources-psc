@@ -4,13 +4,13 @@ module RegisterSourcesPsc
   class Address < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :address_line_1, Types::String.optional.default(nil)
-    attribute :address_line_2, Types::String.optional.default(nil)
-    attribute :care_of, Types::String.optional.default(nil)
-    attribute :country, Types::String.optional.default(nil)
-    attribute :locality, Types::String.optional.default(nil)
-    attribute :postal_code, Types::String.optional.default(nil)
-    attribute :premises, Types::String.optional.default(nil)
-    attribute :region, Types::String.optional.default(nil)
+    attribute? :address_line_1, Types::String.optional
+    attribute? :address_line_2, Types::String.optional
+    attribute? :care_of, Types::String.optional
+    attribute? :country, Types::String.optional
+    attribute? :locality, Types::String.optional
+    attribute? :postal_code, Types::String.optional
+    attribute? :premises, Types::String.optional
+    attribute? :region, Types::String.optional
   end
 end

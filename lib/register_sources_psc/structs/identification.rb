@@ -4,10 +4,10 @@ module RegisterSourcesPsc
   class Identification < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :country_registered, Types::String.optional.default(nil)
-    attribute :legal_authority, Types::String.optional.default(nil)
-    attribute :legal_form, Types::String.optional.default(nil)
-    attribute :place_registered, Types::String.optional.default(nil)
-    attribute :registration_number, Types::String.optional.default(nil)
+    attribute? :country_registered, Types::String.optional
+    attribute? :legal_authority, Types::String.optional
+    attribute? :legal_form, Types::String.optional
+    attribute? :place_registered, Types::String.optional
+    attribute? :registration_number, Types::String.optional
   end
 end

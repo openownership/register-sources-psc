@@ -5,6 +5,6 @@ module RegisterSourcesPsc
     transform_keys(&:to_sym)
 
     attribute :self, Types::String
-    attribute :statement, Types::String.optional.default(nil)
+    attribute? :statement, Types::String.optional
   end
 end

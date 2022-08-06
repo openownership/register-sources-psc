@@ -75,6 +75,8 @@ module RegisterSourcesPsc
       end
 
       def store(records)
+        return true if records.empty?
+
         operations = records.map do |record|
           {
             index:  {
@@ -91,7 +93,7 @@ module RegisterSourcesPsc
           raise ElasticsearchError, errors: result['errors']
         end
 
-        result
+        true
       end
 
       private

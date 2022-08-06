@@ -8,10 +8,10 @@ module RegisterSourcesPsc
   class SuperSecure < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :ceased, Types::Nominal::Bool.optional.default(nil)
-    attribute :description, SuperSecureDescriptions.optional.default(nil)
-    attribute :etag, Types::String.optional.default(nil)
-    attribute :kind, SuperSecureKinds.optional.default(nil)
-    attribute :links, Links.optional.default(nil)
+    attribute? :ceased, Types::Nominal::Bool.optional
+    attribute? :description, SuperSecureDescriptions.optional
+    attribute :etag, Types::String
+    attribute? :kind, SuperSecureKinds.optional
+    attribute? :links, Links.optional
   end
 end
