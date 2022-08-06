@@ -82,11 +82,17 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
 
       sleep 1 # eventually consistent, give time
 
-      results = subject.get()
+      results = subject.list_by_company_number("1234567")
 
       expect(results).not_to be_empty
       result_records = results.map(&:record).sort_by { |record| record.data.etag }
       expect(result_records).to eq records.sort_by { |record| record.data.etag }
+
+      expect(subject.get(corporate_record.data.etag)).to eq corporate_record
+
+      # When records do not exist
+      expect(subject.get("missing")).to be_nil
+      expect(subject.list_by_company_number("missing")).to eq []
     end
   end
 end

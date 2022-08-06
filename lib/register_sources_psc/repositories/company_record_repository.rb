@@ -23,13 +23,51 @@ module RegisterSourcesPsc
         @index = index
       end
 
-      def get()
+      def get(etag)
         process_results(
           client.search(
             index: index,
             body: {
               query: {
-                bool: {}
+                nested: {
+                  path: "data",
+                  query: {
+                    bool: {
+                      must: [
+                        {
+                          match: {
+                            "data.etag": {
+                              query: etag
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          )
+        ).first&.record
+      end
+
+      def list_by_company_number(company_number)
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: {
+                  must: [
+                    {
+                      match: {
+                        company_number: {
+                          query: company_number
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           )

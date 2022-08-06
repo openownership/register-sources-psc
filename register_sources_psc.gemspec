@@ -40,7 +40,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rubyzip', '~> 2.3.2'
 
-  spec.add_dependency 'elasticsearch', '~> 7.10.1'
+  spec.add_dependency 'elasticsearch', '~> 8.3'
 
   spec.add_dependency 'faraday'
   spec.add_dependency 'faraday_middleware'
