@@ -15,7 +15,7 @@ services:
       - 9200
 
   register_sources_psc_unittests:
-    build: .
+    image: register_sources_psc_unittests:latest
     environment:
       - ELASTICSEARCH_HOST=register_psc_elasticsearch_test
       - ELASTICSEARCH_PASSWORD=
