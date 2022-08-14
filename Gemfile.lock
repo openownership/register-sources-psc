@@ -1,4 +1,14 @@
 GIT
+  remote: git@github.com:openownership/register-bods-v2.git
+  revision: a1054a0442e55678c46c24317f8f51880fb268cf
+  specs:
+    register_bods_v2 (0.1.0)
+      activesupport (~> 6.1.6.1)
+      dry-struct (~> 1.4.0)
+      dry-types (~> 1.5.1)
+      elasticsearch (~> 7.10.1)
+
+GIT
   remote: git@github.com:openownership/register-common.git
   revision: 1cae65961e19f0d842024b49f30c7ea0144617ac
   specs:
@@ -159,6 +169,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  register_bods_v2!
   register_common!
   register_sources_psc!
   rspec (~> 3.0)
