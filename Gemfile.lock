@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:openownership/register-bods-v2.git
-  revision: a1054a0442e55678c46c24317f8f51880fb268cf
+  revision: 10e24c287f22843c1d8eb033f852837221f683c9
   specs:
     register_bods_v2 (0.1.0)
       activesupport (~> 6.1.6.1)
