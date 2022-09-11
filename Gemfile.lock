@@ -1,16 +1,16 @@
 GIT
   remote: git@github.com:openownership/register-bods-v2.git
-  revision: 10e24c287f22843c1d8eb033f852837221f683c9
+  revision: 7bc26f911ac84c041e474a5f79b7616e15f40929
   specs:
     register_bods_v2 (0.1.0)
-      activesupport (~> 6.1.6.1)
+      activesupport (~> 6.1)
       dry-struct (~> 1.4.0)
       dry-types (~> 1.5.1)
       elasticsearch (~> 7.10.1)
 
 GIT
   remote: git@github.com:openownership/register-common.git
-  revision: 1cae65961e19f0d842024b49f30c7ea0144617ac
+  revision: 3e93ea0d93b15ade049184ff48ea159edbe923e6
   specs:
     register_common (0.1.0)
       activesupport
@@ -25,11 +25,28 @@ GIT
       nokogiri
       rubyzip (~> 2.3.2)
 
+GIT
+  remote: git@github.com:openownership/register-sources-oc.git
+  revision: 11e331572bbc0b3dcca1bc99da2ed4f80956906f
+  specs:
+    register_sources_oc (0.1.0)
+      activesupport (~> 6.1)
+      countries (~> 4.0.1)
+      dotenv
+      dry-struct (~> 1.4.0)
+      dry-types (~> 1.5.1)
+      elasticsearch (~> 7.10.1)
+      faraday (= 1.9.3)
+      faraday_middleware (~> 1.0)
+      iso8601
+      net-http-persistent (~> 4.0.1)
+      rexml
+
 PATH
   remote: .
   specs:
     register_sources_psc (0.1.0)
-      activesupport (~> 6.1.6.1)
+      activesupport (~> 6.1)
       dry-struct (~> 1.4.0)
       dry-types (~> 1.5.1)
       elasticsearch (~> 7.10.1)
@@ -37,20 +54,20 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.6.1)
+    activesupport (6.1.7)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
-    addressable (2.8.0)
-      public_suffix (>= 2.0.2, < 5.0)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     aws-eventstream (1.2.0)
-    aws-partitions (1.618.0)
+    aws-partitions (1.628.0)
     aws-sdk-athena (1.56.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.132.0)
+    aws-sdk-core (3.144.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.525.0)
       aws-sigv4 (~> 1.1)
@@ -72,6 +89,9 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     concurrent-ruby (1.1.10)
     connection_pool (2.2.5)
+    countries (4.0.1)
+      i18n_data (~> 0.13.0)
+      sixarm_ruby_unaccent (~> 1.1)
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
@@ -102,7 +122,7 @@ GEM
     elasticsearch-transport (7.10.1)
       faraday (~> 1)
       multi_json
-    faraday (1.10.1)
+    faraday (1.9.3)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -130,16 +150,18 @@ GEM
     hashdiff (1.0.1)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    i18n_data (0.13.1)
     ice_nine (0.11.2)
+    iso8601 (0.13.0)
     jmespath (1.6.1)
-    minitest (5.16.2)
+    minitest (5.16.3)
     multi_json (1.15.0)
     multipart-post (2.2.3)
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)
     nokogiri (1.13.8-x86_64-linux)
       racc (~> 1.4)
-    public_suffix (4.0.7)
+    public_suffix (5.0.0)
     racc (1.6.0)
     rexml (3.2.5)
     rspec (3.11.0)
@@ -157,9 +179,10 @@ GEM
     rspec-support (3.11.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
+    sixarm_ruby_unaccent (1.2.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
-    webmock (3.17.1)
+    webmock (3.18.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -171,6 +194,7 @@ PLATFORMS
 DEPENDENCIES
   register_bods_v2!
   register_common!
+  register_sources_oc!
   register_sources_psc!
   rspec (~> 3.0)
   webmock
