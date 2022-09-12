@@ -15,9 +15,17 @@ GIT
       nokogiri
       rubyzip (~> 2.3.2)
 
-GIT
-  remote: git@github.com:openownership/register-sources-oc.git
-  revision: 11e331572bbc0b3dcca1bc99da2ed4f80956906f
+PATH
+  remote: ../register-bods-v2
+  specs:
+    register_bods_v2 (0.1.0)
+      activesupport (~> 6.1)
+      dry-struct (~> 1.4.0)
+      dry-types (~> 1.5.1)
+      elasticsearch (~> 7.10.1)
+
+PATH
+  remote: ../register-sources-oc
   specs:
     register_sources_oc (0.1.0)
       activesupport (~> 6.1)
@@ -31,15 +39,6 @@ GIT
       iso8601
       net-http-persistent (~> 4.0.1)
       rexml
-
-PATH
-  remote: ../register-bods-v2
-  specs:
-    register_bods_v2 (0.1.0)
-      activesupport (~> 6.1)
-      dry-struct (~> 1.4.0)
-      dry-types (~> 1.5.1)
-      elasticsearch (~> 7.10.1)
 
 PATH
   remote: .

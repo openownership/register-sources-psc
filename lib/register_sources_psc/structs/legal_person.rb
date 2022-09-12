@@ -10,14 +10,14 @@ module RegisterSourcesPsc
   class LegalPerson < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute? :address, Address.optional
-    attribute? :ceased_on, Types::Nominal::Date.optional
+    attribute? :address, Address
+    attribute? :ceased_on, Types::Nominal::Date
     attribute? :etag, Types::String
-    attribute? :identification, Identification.optional
-    attribute? :kind, LegalPersonKinds.optional
-    attribute? :links, Links.optional
-    attribute? :name, Types::String.optional
+    attribute? :identification, Identification
+    attribute? :kind, LegalPersonKinds
+    attribute? :links, Links
+    attribute? :name, Types::String
     attribute? :natures_of_control, Types.Array(Descriptions).default([])
-    attribute? :notified_on, Types::Nominal::Date.optional
+    attribute? :notified_on, Types::Nominal::Date
   end
 end

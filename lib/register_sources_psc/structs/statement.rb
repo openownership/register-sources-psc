@@ -9,13 +9,13 @@ module RegisterSourcesPsc
   class Statement < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute? :ceased_on, Types::Nominal::Date.optional
-    attribute? :etag, Types::String.optional
-    attribute? :kind, StatementKinds.optional
-    attribute? :linked_psc_name, Types::String.optional
-    attribute? :links, Links.optional
-    attribute? :notified_on, Types::Nominal::Date.optional
-    attribute? :restrictions_notice_withdrawal_reason, RestrictionsNotices.optional
-    attribute? :statement, StatementDescriptions.optional
+    attribute? :ceased_on, Types::Nominal::Date
+    attribute? :etag, Types::String
+    attribute? :kind, StatementKinds
+    attribute? :linked_psc_name, Types::String
+    attribute? :links, Links
+    attribute? :notified_on, Types::Nominal::Date
+    attribute? :restrictions_notice_withdrawal_reason, RestrictionsNotices
+    attribute? :statement, StatementDescriptions
   end
 end

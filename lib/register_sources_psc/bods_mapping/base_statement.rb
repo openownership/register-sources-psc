@@ -8,15 +8,16 @@ module RegisterSourcesPsc
     class BaseStatement
       ID_PREFIX = 'openownership-register-'.freeze
 
-      def initialize(psc_record)
+      def initialize(psc_record, entity_resolver: nil)
         @psc_record = psc_record
+        @entity_resolver = entity_resolver
       end
 
       # def call
 
       private
 
-      attr_reader :psc_record
+      attr_reader :psc_record, :entity_resolver
 
       def data
         psc_record.data
@@ -75,12 +76,9 @@ module RegisterSourcesPsc
       def psc_self_link_identifiers # if entity.legal_entity?
         identifier_link = data.links[:self]
         return unless identifier_link.present?
-        
+
         identifiers = [
-          RegisterBodsV2::Identifier.new(
-            id: identifier_link,
-            schemeName: DOCUMENT_ID,
-          )
+          RegisterBodsV2::Identifier.new(id: identifier_link, schemeName: DOCUMENT_ID)
         ]
 
         return identifiers unless data.respond_to?(:identification)

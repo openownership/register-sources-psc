@@ -11,17 +11,17 @@ module RegisterSourcesPsc
   class Individual < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute? :address, Address.optional
-    attribute? :ceased_on, Types::Nominal::Date.optional
-    attribute? :country_of_residence, Types::String.optional
-    attribute? :date_of_birth, DateOfBirth.optional
+    attribute? :address, Address
+    attribute? :ceased_on, Types::Nominal::Date
+    attribute? :country_of_residence, Types::String
+    attribute? :date_of_birth, DateOfBirth
     attribute? :etag, Types::String
-    attribute? :kind, IndividualKinds.optional
-    attribute? :links, Links.optional
-    attribute? :name, Types::String.optional
-    attribute? :name_elements, NameElements.optional
-    attribute? :nationality, Types::String.optional
+    attribute? :kind, IndividualKinds
+    attribute? :links, Links
+    attribute? :name, Types::String
+    attribute? :name_elements, NameElements
+    attribute? :nationality, Types::String
     attribute? :natures_of_control, Types.Array(Descriptions)
-    attribute? :notified_on, Types::Nominal::Date.optional
+    attribute? :notified_on, Types::Nominal::Date
   end
 end
