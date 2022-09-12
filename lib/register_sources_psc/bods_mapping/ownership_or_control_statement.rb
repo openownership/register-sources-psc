@@ -7,30 +7,42 @@ require_relative 'interest_parser'
 module RegisterSourcesPsc
   module BodsMapping
     class OwnershipOrControlStatement < BaseStatement
-      def call(resolved_record, source_statement, target_statement)
-        RegisterBodsV2::OwnershipOrControlStatement.new(
-          statementID: statementID,
-          statementType: statementType,
-          statementDate: statementDate,
-          isComponent: isComponent,
-          componentStatementIDs: componentStatementIDs,
+      def initialize(
+        psc_record,
+        entity_resolver: nil,
+        source_statement: nil,
+        target_statement: nil,
+        interest_parser: nil
+      )
+        @psc_record = psc_record
+        @source_statement = source_statement
+        @target_statement = target_statement
+        @interest_parser = interest_parser || InterestParser.new
+        @entity_resolver = entity_resolver
+      end
+
+      def call
+        RegisterBodsV2::OwnershipOrControlStatement[{
+          statementID: statement_id,
+          statementType: statement_type,
+          statementDate: statement_date,
+          isComponent: is_component,
+          componentStatementIDs: component_statement_ids,
           subject: subject,
-          interestedParty: interestedParty,
+          interestedParty: interested_party,
           interests: interests,
-          publicationDetails: publicationDetails,
+          publicationDetails: publication_details,
           source: source,
           annotations: annotations,
-          replacesStatements: replacesStatements
-        )
+          replacesStatements: replaces_statements
+        }.compact]
       end
 
       private
 
-      def interest_parser
-        @interest_parser ||= InterestParser.new
-      end
+      attr_reader :interest_parser, :entity_resolver, :source_statement, :target_statement
 
-      def statementID
+      def statement_id
         #when Structs::Relationship
         #  things_that_make_relationship_statements_unique = {
         #    id: obj.id,
@@ -48,15 +60,15 @@ module RegisterSourcesPsc
         #  ID_PREFIX + hasher(things_that_make_psc_statement_statements_unique.to_json)
       end
 
-      def statementType
+      def statement_type
         RegisterBodsV2::StatementTypes['ownershipOrControlStatement']
       end
 
-      def statementDate
-        data['notified_on'].presence.try(:to_s) # ISO8601::Date
+      def statement_date
+        data.notified_on.presence.try(:to_s) # ISO8601::Date
       end
 
-      def componentStatementIDs
+      def component_statement_ids
         nil
       end
 
@@ -67,7 +79,7 @@ module RegisterSourcesPsc
         # NOT IMPLEMENTED
       end
 
-      def interestedParty
+      def interested_party
         # NOT IMPLEMENTED
       end
       #def ocs_interested_party(relationship)
@@ -111,11 +123,11 @@ module RegisterSourcesPsc
       #end
 
       def interests
-        (data['natures_of_control'] || []).map do |i|
+        (data.natures_of_control || []).map do |i|
           entry = interest_parser.call(i)  
           share = entry.fetch(:share, {})
 
-          RegisterBodsV2::Interest.new(
+          RegisterBodsV2::Interest[{
             type: entry[:type],
             interestLevel: nil,
             beneficialOwnershipOrControl: nil,
@@ -127,9 +139,9 @@ module RegisterSourcesPsc
               exclusiveMinimum: share[:exclusiveMinimum],
               exclusiveMaximum: share[:exclusiveMaximum],
             ),
-            startDate: data['notified_on'].presence.try(:to_s),
-            endDate: data['ceased_on'].presence.try(:to_s)
-          )
+            startDate: data.notified_on.presence.try(:to_s),
+            endDate: data.ceased_on.presence.try(:to_s)
+          }.compact]
         end
       end
 
