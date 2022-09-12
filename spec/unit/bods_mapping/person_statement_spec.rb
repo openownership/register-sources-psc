@@ -40,5 +40,47 @@ RSpec.describe RegisterSourcesPsc::BodsMapping::PersonStatement do
     result = subject.call
 
     expect(result).to be_a RegisterBodsV2::PersonStatement
+    expect(result.to_h).to eq({
+      addresses: [
+        {
+          address: "123 Main Street, Example Town, Exampleshire, EX4 2MP",
+          country: "GB",
+          type: "registered"
+        }
+      ],
+      birthDate: "1955-10-01",
+      identifiers: [
+        {
+          id: "/company/01234567/persons-with-significant-control/individual/abcdef123456789",
+          schemeName: "GB Persons Of Significant Control Register"
+        }
+      ],
+      isComponent: false,
+      names: [
+        { familyName: "Bloggs", fullName: "Joe Bloggs", givenName: "Joe", type: "individual" }
+      ],
+      nationalities: [
+        { code: "GB", name: "United Kingdom of Great Britain and Northern Ireland" }
+      ],
+      personType: "knownPerson",
+      publicationDetails: {
+        bodsVersion: "0.2", 
+        license: "https://register.openownership.org/terms-and-conditions",
+        publicationDate: "2022-09-12",
+        publisher: {
+          name: "OpenOwnership Register",
+          url: "https://register.openownership.org"
+        }
+      },
+      source: {
+        assertedBy: nil,
+        description: "GB Persons Of Significant Control Register",
+        retrievedAt: "2022-09-12",
+        type: "officialRegister",
+        url: "http://download.companieshouse.gov.uk/en_pscdata.html"
+      },
+      statementID: "openownership-register-2042754144729635384",
+      statementType: "personStatement",
+    })
   end
 end

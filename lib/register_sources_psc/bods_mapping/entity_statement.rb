@@ -80,8 +80,7 @@ module RegisterSourcesPsc
       end
 
       def unspecified_entity_details
-        # { reason, description }
-        # UNIMPLEMENTED IN REGISTER
+        # UNIMPLEMENTED IN REGISTER { reason, description }
       end
 
       def name
@@ -101,10 +100,6 @@ module RegisterSourcesPsc
         return nil if country.blank?
 
         Bods::Jurisdiction.new(name: country.name, code: country.alpha2)
-      end
-
-      def identifiers
-        [] #TODO: identifier_builder.build psc_record
       end
 
       def founding_date
