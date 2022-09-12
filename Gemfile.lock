@@ -1,14 +1,4 @@
 GIT
-  remote: git@github.com:openownership/register-bods-v2.git
-  revision: 7bc26f911ac84c041e474a5f79b7616e15f40929
-  specs:
-    register_bods_v2 (0.1.0)
-      activesupport (~> 6.1)
-      dry-struct (~> 1.4.0)
-      dry-types (~> 1.5.1)
-      elasticsearch (~> 7.10.1)
-
-GIT
   remote: git@github.com:openownership/register-common.git
   revision: 3e93ea0d93b15ade049184ff48ea159edbe923e6
   specs:
@@ -43,13 +33,25 @@ GIT
       rexml
 
 PATH
-  remote: .
+  remote: ../register-bods-v2
   specs:
-    register_sources_psc (0.1.0)
+    register_bods_v2 (0.1.0)
       activesupport (~> 6.1)
       dry-struct (~> 1.4.0)
       dry-types (~> 1.5.1)
       elasticsearch (~> 7.10.1)
+
+PATH
+  remote: .
+  specs:
+    register_sources_psc (0.1.0)
+      activesupport (~> 6.1)
+      countries (~> 4.0.1)
+      dry-struct (~> 1.4.0)
+      dry-types (~> 1.5.1)
+      elasticsearch (~> 7.10.1)
+      iso8601
+      xxhash
 
 GEM
   remote: https://rubygems.org/
@@ -186,6 +188,7 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    xxhash (0.5.0)
     zeitwerk (2.6.0)
 
 PLATFORMS

@@ -5,25 +5,22 @@ module RegisterSourcesPsc
     class EntityStatementIdentifiers
       OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
 
-      def initialize(resolved_record)
-        @resolved_record = resolved_record
+      def initialize(psc_record)
+        @psc_record = psc_record
       end
 
-      def build
-        # assume corporate identifier for now
-        psc_self_link_identifiers + [opencorporates_identifier, register_identifier].compact
+      def build(opencorporates: false)
+        opencorporates_id = nil # opencorporates ? opencorporates_identifier : nil
+
+        psc_self_link_identifiers + [opencorporates_id, register_identifier].compact
       end
 
       private
 
-      attr_reader :resolved_record
+      attr_reader :psc_record
 
       def data
-        @data ||= resolved_record.raw_data_record.parsed_raw_data['data']
-      end
-
-      def company_details
-        @company_details ||= resolved_record.resolver_details.company_details
+        @data ||= psc_record.data
       end
 
       def opencorporates_identifier(identifier) # get from resolver_details
@@ -33,7 +30,7 @@ module RegisterSourcesPsc
 
         RegisterBodsV2::Identifier.new(
           id: oc_url,
-          scheme: nil,
+          # scheme: nil,
           schemeName: OPEN_CORPORATES_SCHEME_NAME,
           uri: "https://opencorporates.com/companies/#{jurisdiction}/#{number}"
         )
@@ -47,37 +44,35 @@ module RegisterSourcesPsc
       # parts of the PSC data it came from and b) share the company number we
       # figured out from an OC lookup, but make the provenance clearer.
       DOCUMENT_ID = 'GB Persons Of Significant Control Register'
-      def psc_self_link_identifiers(identifier) # if entity.legal_entity?
-        return unless identifier['link']
-
-        identifier_link = data['links']['self']
+      def psc_self_link_identifiers # if entity.legal_entity?
+        identifier_link = data.links.self
         return unless identifier_link.present?
 
-        company_number = data['identification']['registration_number']
+        company_number = data.identification.registration_number
 
         identifiers = [
           RegisterBodsV2::Identifier.new(
             id: identifier_link,
-            scheme: nil,
+            # scheme: nil,
             schemeName: DOCUMENT_ID,
-            uri: nil
+            # uri: nil
           )
         ]
         if company_number.present? # this depends on if corporate entity
           identifiers << RegisterBodsV2::Identifier.new(
             id: company_number,
-            scheme: nil,
+            # scheme: nil,
             schemeName: "#{DOCUMENT_ID} - Registration numbers",
-            uri: nil # uri
+            # uri: nil # uri
           )
         end
         identifiers
       end
 
-      def register_identifier(entity)
+      def register_identifier
         RegisterBodsV2::Identifier.new(
           id: url,
-          scheme: nil,
+          # scheme: nil,
           schemeName: 'OpenOwnership Register',
           uri: URI.join(url_base, "/entities/#{entity.id}").to_s
         )

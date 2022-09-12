@@ -5,18 +5,18 @@ require 'register_sources_psc/bods_mapping/person_statement'
 module RegisterSourcesPsc
   module BodsMapping
     class RecordProcessor
-      def process(resolved_record)
-        mapper = select_mapper(resolved_record)
+      def process(psc_record)
+        mapper = select_mapper(psc_record)
 
         return unless mapper
 
-        mapper.new(resolved_record).call
+        mapper.new(psc_record).call
       end
 
       private
 
-      def select_mapper(resolved_record)
-        case resolved_record.psc_record.data.kind
+      def select_mapper(psc_record)
+        case psc_record.data.kind
         when IndividualKinds['individual-person-with-significant-control']:
           BodsMapping::PersonStatement
         end
