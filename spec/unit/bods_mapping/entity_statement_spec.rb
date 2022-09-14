@@ -1,11 +1,18 @@
+require 'active_support/testing/time_helpers'
+
 require 'register_sources_psc/bods_mapping/entity_statement'
 require 'register_sources_psc/structs/company_record'
 require 'register_sources_oc/structs/resolver_response'
 
 RSpec.describe RegisterSourcesPsc::BodsMapping::EntityStatement do
+  include ActiveSupport::Testing::TimeHelpers
+
   subject { described_class.new(psc_record, entity_resolver: entity_resolver) }
 
   let(:entity_resolver) { double 'entity_resolver' }
+
+  before { travel_to Time.at(1663187854) }
+  after { travel_back }
 
   context 'when record is corporate_entity' do
     let(:psc_record) do
@@ -81,7 +88,7 @@ RSpec.describe RegisterSourcesPsc::BodsMapping::EntityStatement do
         publicationDetails: {
           bodsVersion: "0.2",
           license: "https://register.openownership.org/terms-and-conditions",
-          publicationDate: "2022-09-12",
+          publicationDate: "2022-09-14",
           publisher: {
             name: "OpenOwnership Register",
             url: "https://register.openownership.org"
@@ -90,11 +97,11 @@ RSpec.describe RegisterSourcesPsc::BodsMapping::EntityStatement do
         source: {
           assertedBy: nil,
           description: "GB Persons Of Significant Control Register",
-          retrievedAt: "2022-09-12",
+          retrievedAt: "2022-09-14",
           type: "officialRegister",
           url: "http://download.companieshouse.gov.uk/en_pscdata.html"
         },
-        statementID: "openownership-register-11676989026173320659",
+        statementID: "openownership-register-9136926620058510619",
         statementType: "entityStatement",
       })
     end

@@ -1,8 +1,15 @@
+require 'active_support/testing/time_helpers'
+
 require 'register_sources_psc/bods_mapping/person_statement'
 require 'register_sources_psc/structs/company_record'
 
 RSpec.describe RegisterSourcesPsc::BodsMapping::PersonStatement do
+  include ActiveSupport::Testing::TimeHelpers
+
   subject { described_class.new(psc_record) }
+
+  before { travel_to Time.at(1663187854) }
+  after { travel_back }
 
   let(:psc_record) do
     data = {
@@ -66,7 +73,7 @@ RSpec.describe RegisterSourcesPsc::BodsMapping::PersonStatement do
       publicationDetails: {
         bodsVersion: "0.2", 
         license: "https://register.openownership.org/terms-and-conditions",
-        publicationDate: "2022-09-12",
+        publicationDate: "2022-09-14",
         publisher: {
           name: "OpenOwnership Register",
           url: "https://register.openownership.org"
@@ -75,7 +82,7 @@ RSpec.describe RegisterSourcesPsc::BodsMapping::PersonStatement do
       source: {
         assertedBy: nil,
         description: "GB Persons Of Significant Control Register",
-        retrievedAt: "2022-09-12",
+        retrievedAt: "2022-09-14",
         type: "officialRegister",
         url: "http://download.companieshouse.gov.uk/en_pscdata.html"
       },

@@ -1,12 +1,20 @@
 require 'register_bods_v2/structs/interest'
 require 'register_bods_v2/structs/ownership_or_control_statement'
 require 'register_bods_v2/structs/share'
-require_relative 'base_statement'
+require 'register_bods_v2/constants/publisher'
+require 'register_bods_v2/structs/publication_details'
+require 'register_bods_v2/structs/source'
+require 'register_bods_v2/structs/subject'
+
 require_relative 'interest_parser'
 
 module RegisterSourcesPsc
   module BodsMapping
-    class OwnershipOrControlStatement < BaseStatement
+    class OwnershipOrControlStatement
+      def self.call(psc_record, **kwargs)
+        new(psc_record, **kwargs).call
+      end
+
       def initialize(
         psc_record,
         entity_resolver: nil,
@@ -26,15 +34,15 @@ module RegisterSourcesPsc
           statementID: statement_id,
           statementType: statement_type,
           statementDate: statement_date,
-          isComponent: is_component,
-          componentStatementIDs: component_statement_ids,
+          isComponent: false,
+          # componentStatementIDs: component_statement_ids,
           subject: subject,
           interestedParty: interested_party,
           interests: interests,
           publicationDetails: publication_details,
           source: source,
-          annotations: annotations,
-          replacesStatements: replaces_statements
+          # annotations: annotations,
+          # replacesStatements: replaces_statements
         }.compact]
       end
 
@@ -42,22 +50,15 @@ module RegisterSourcesPsc
 
       attr_reader :interest_parser, :entity_resolver, :source_statement, :target_statement
 
-      def statement_id
-        #when Structs::Relationship
-        #  things_that_make_relationship_statements_unique = {
-        #    id: obj.id,
-        #    updated_at: obj.updated_at,
-        #    source_id: statement_id(obj.source),
-        #    target_id: statement_id(obj.target),
-        #  }
-        #  ID_PREFIX + hasher(things_that_make_relationship_statements_unique.to_json)
-        #when Structs::Statement
-        #  things_that_make_psc_statement_statements_unique = {
-        #    id: obj.id,
-        #    updated_at: obj.updated_at,
-        #    entity_id: statement_id(obj.entity),
-        #  }
-        #  ID_PREFIX + hasher(things_that_make_psc_statement_statements_unique.to_json)
+      def statement_id #when Structs::Relationship
+        ID_PREFIX + hasher(
+          {
+            id: obj.id,
+            updated_at: obj.updated_at,
+            source_id: source_statement.statementID,
+            target_id: target_statement.statementID,
+          }.to_json
+        )
       end
 
       def statement_type
@@ -68,15 +69,10 @@ module RegisterSourcesPsc
         data.notified_on.presence.try(:to_s) # ISO8601::Date
       end
 
-      def component_statement_ids
-        nil
-      end
-
       def subject
         RegisterBodsV2::Subject.new(
-          describedByEntityStatement: statement_id(target)
+          describedByEntityStatement: target_statement.statementID
         )
-        # NOT IMPLEMENTED
       end
 
       def interested_party
@@ -146,30 +142,41 @@ module RegisterSourcesPsc
       end
 
       def source
-        # relationship source
-        raise 'implement'
+        
       end
-      # entity or person statement
+      def ocs_source(relationship, imports)
+        return ocs_source_from_raw_data(relationship, imports) unless relationship.import_ids.empty?
+        
+        provenance = relationship.provenance
+        return if provenance.blank?
+        return unless SOURCE_TYPES_MAP.key?(provenance.source_name)
 
-      def target
-        # relationship target
-        raise 'implement'
+        {
+          type:        SOURCE_TYPES_MAP[provenance.source_name],
+          description: SOURCE_NAMES_MAP.fetch(provenance.source_name, provenance.source_name),
+          url:         provenance.source_url.presence,
+          retrievedAt: provenance.retrieved_at.iso8601,
+        }.compact
       end
-      # child_entity
-      # company_number = record['company_number']
-      #Structs::RegisterEntity.new(
-      #  attributes: {
-      #    identifiers: [
-      #      {
-      #        'document_id'    => datasource.document_id,
-      #        'company_number' => company_number
-      #      }
-      #    ],
-      #    type:              EntityTypes::LEGAL_ENTITY,
-      #    jurisdiction_code: 'gb',
-      #    company_number:    company_number
-      #  }
-      #)
+
+      def ocs_source_from_raw_data(relationship, imports)
+        imports = relationship.import_ids.map { |import_id| imports[import_id.to_s] }.compact
+        raise EmptyImportsError if imports.empty?
+
+        if imports.map(&:data_source_id).uniq.length > 1
+          raise "[#{self.class.name}] Relationship: #{relationship.id} comes from multiple data sources, can't produce a single Source for it"
+        end
+
+        most_recent_import = imports.max_by(&:created_at)
+        data_source = most_recent_import.data_source
+
+        {
+          type:        data_source.types,
+          description: SOURCE_NAMES_MAP.fetch(data_source.name, data_source.name),
+          url:         data_source.url,
+          retrievedAt: most_recent_import.created_at.iso8601,
+        }.compact
+      end
     end
   end
 end

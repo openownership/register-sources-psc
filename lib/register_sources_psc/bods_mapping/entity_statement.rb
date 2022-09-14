@@ -1,9 +1,13 @@
+require 'xxhash'
+
 require 'register_bods_v2/enums/entity_types'
 require 'register_bods_v2/enums/statement_types'
 require 'register_bods_v2/structs/address'
 require 'register_bods_v2/structs/entity_statement'
 require 'register_bods_v2/structs/jurisdiction'
 require 'register_bods_v2/constants/publisher'
+require 'register_bods_v2/structs/publication_details'
+require 'register_bods_v2/structs/source'
 
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
@@ -12,39 +16,50 @@ require 'active_support/core_ext/string/conversions'
 
 require 'register_sources_oc/structs/resolver_request'
 
-require_relative 'base_statement'
-
 module RegisterSourcesPsc
   module BodsMapping
-    class EntityStatement < BaseStatement
+    class EntityStatement
       ID_PREFIX = 'openownership-register-'.freeze
+
+      def self.call(psc_record, **kwargs)
+        new(psc_record, **kwargs).call
+      end
+
+      def initialize(psc_record, entity_resolver: nil)
+        @psc_record = psc_record
+        @entity_resolver = entity_resolver
+      end
 
       def call
         RegisterBodsV2::EntityStatement[{
           statementID: statement_id,
           statementType: statement_type,
-          statementDate: statement_date,
-          isComponent: is_component,
+          statementDate: nil,
+          isComponent: false,
           entityType: entity_type,
-          unspecifiedEntityDetails: unspecified_entity_details,
+          # unspecifiedEntityDetails: unspecified_entity_details,
           name: name,
-          alternateNames: alternate_names,
+          # alternateNames: alternate_names,
           incorporatedInJurisdiction: incorporated_in_jurisdiction,
           identifiers: identifiers,
           foundingDate: founding_date,
           dissolutionDate: dissolution_date,
           addresses: addresses,
-          uri: uri,
-          replacesStatements: replaces_statements,
+          # uri: uri,
+          # replacesStatements: replaces_statements,
           publicationDetails: publication_details,
           source: source,
-          annotations: annotations
+          # annotations: annotations
         }.compact]
       end
 
       private
 
-      attr_reader :psc_record
+      attr_reader :psc_record, :entity_resolver
+
+      def data
+        psc_record.data
+      end
 
       def resolver_response
         return @resolver_response if @resolver_response
@@ -79,16 +94,8 @@ module RegisterSourcesPsc
         psc_self_link_identifiers # add oc identifiers
       end
 
-      def unspecified_entity_details
-        # UNIMPLEMENTED IN REGISTER { reason, description }
-      end
-
       def name
         data.name
-      end
-
-      def alternate_names
-        # UNIMPLEMENTED IN REGISTER
       end
 
       def incorporated_in_jurisdiction
@@ -141,8 +148,67 @@ module RegisterSourcesPsc
         ]
       end
 
-      def uri
+      def publication_details
         # UNIMPLEMENTED IN REGISTER
+        RegisterBodsV2::PublicationDetails.new(
+          publicationDate: Time.now.utc.to_date.to_s, # TODO: fix publication date
+          bodsVersion: RegisterBodsV2::BODS_VERSION,
+          license: RegisterBodsV2::BODS_LICENSE,
+          publisher: RegisterBodsV2::PUBLISHER
+        )
+      end
+
+      def source
+        # UNIMPLEMENTED IN REGISTER
+        # implemented for relationships
+        RegisterBodsV2::Source.new(
+          type: RegisterBodsV2::SourceTypes['officialRegister'],
+          description: 'GB Persons Of Significant Control Register',
+          url: "http://download.companieshouse.gov.uk/en_pscdata.html", # TODO: link to snapshot?
+          retrievedAt: Time.now.utc.to_date.to_s, # TODO: fix publication date, # TODO: add retrievedAt to record iso8601
+          assertedBy: nil # TODO: if it is a combination of sources (PSC and OpenCorporates), is it us?
+        )
+      end
+
+      # When we import PSC data containing RLEs (intermediate company owners) we
+      # give them a weird three-part identifier including their company number and
+      # the original identifier from the data called a "self link". When we output
+      # this we want to output two BODS identifiers, one for the link and one for the
+      # company number. This allows us to a) link the statement back to the specific
+      # parts of the PSC data it came from and b) share the company number we
+      # figured out from an OC lookup, but make the provenance clearer.
+      DOCUMENT_ID = 'GB Persons Of Significant Control Register'
+      def psc_self_link_identifiers # if entity.legal_entity?
+        identifier_link = data.links[:self]
+        return unless identifier_link.present?
+
+        identifiers = [
+          RegisterBodsV2::Identifier.new(id: identifier_link, schemeName: DOCUMENT_ID)
+        ]
+
+        return identifiers unless data.respond_to?(:identification)
+
+        company_number = data.identification.registration_number
+        if company_number.present? # this depends on if corporate entity
+          identifiers << RegisterBodsV2::Identifier.new(
+            id: company_number,
+            schemeName: "#{DOCUMENT_ID} - Registration numbers",
+          )
+        end
+        identifiers
+      end
+
+      # TODO!
+      def register_identifier
+        RegisterBodsV2::Identifier.new(
+          id: url,
+          schemeName: 'OpenOwnership Register',
+          uri: URI.join(url_base, "/entities/#{entity.id}").to_s
+        )
+      end
+
+      def hasher(data)
+        XXhash.xxh64(data).to_s
       end
     end
   end
