@@ -1,5 +1,9 @@
+require 'xxhash'
+
 require 'register_bods_v2/structs/interest'
 require 'register_bods_v2/structs/ownership_or_control_statement'
+require 'register_bods_v2/structs/entity_statement'
+require 'register_bods_v2/structs/entity_statement'
 require 'register_bods_v2/structs/share'
 require 'register_bods_v2/constants/publisher'
 require 'register_bods_v2/structs/publication_details'
@@ -11,6 +15,10 @@ require_relative 'interest_parser'
 module RegisterSourcesPsc
   module BodsMapping
     class OwnershipOrControlStatement
+      UnsupportedSourceStatementTypeError = Class.new(StandardError)
+
+      ID_PREFIX = 'openownership-register-'.freeze
+
       def self.call(psc_record, **kwargs)
         new(psc_record, **kwargs).call
       end
@@ -35,26 +43,27 @@ module RegisterSourcesPsc
           statementType: statement_type,
           statementDate: statement_date,
           isComponent: false,
-          # componentStatementIDs: component_statement_ids,
           subject: subject,
           interestedParty: interested_party,
           interests: interests,
           publicationDetails: publication_details,
           source: source,
-          # annotations: annotations,
-          # replacesStatements: replaces_statements
         }.compact]
       end
 
       private
 
-      attr_reader :interest_parser, :entity_resolver, :source_statement, :target_statement
+      attr_reader :interest_parser, :entity_resolver, :source_statement, :target_statement, :psc_record
+
+      def data
+        psc_record.data
+      end
 
       def statement_id #when Structs::Relationship
         ID_PREFIX + hasher(
           {
-            id: obj.id,
-            updated_at: obj.updated_at,
+            id: 'TODO_ID', # obj.id,
+            updated_at: statement_date,
             source_id: source_statement.statementID,
             target_id: target_statement.statementID,
           }.to_json
@@ -76,106 +85,76 @@ module RegisterSourcesPsc
       end
 
       def interested_party
-        # NOT IMPLEMENTED
+        case source_statement.statementType
+        when RegisterBodsV2::StatementTypes['personStatement']
+          RegisterBodsV2::InterestedParty[{
+            describedByPersonStatement: source_statement.statementID
+          }]
+        when RegisterBodsV2::StatementTypes['entityStatement']
+          case source_statement.entityType
+          when RegisterBodsV2::EntityTypes['unknownEntity']
+            RegisterBodsV2::InterestedParty[{
+              unspecified: source_statement.unspecifiedEntityDetails
+            }.compact]
+          when RegisterBodsV2::EntityTypes['legalEntity']
+            RegisterBodsV2::InterestedParty[{
+              describedByEntityStatement: source_statement.statementID
+            }]
+          else
+            RegisterBodsV2::InterestedParty[{}] # TODO: raise error
+          end
+        else
+          raise UnsupportedSourceStatementTypeError
+        end
       end
-      #def ocs_interested_party(relationship)
-      #  source = relationship.source
-
-      #  case source
-      #  when Structs::UnknownPersonsEntity
-      #    source_unspecified_reason = ocs_unspecified_reason(source)
-      #    if source_unspecified_reason.present?
-      #      {
-      #        unspecified: {
-      #          reason:      source_unspecified_reason,
-      #          description: source.name,
-      #        },
-      #      }
-      #    else
-      #      {
-      #        describedByPersonStatement: statement_id(source),
-      #      }
-      #    end
-      #  when Structs::Entity
-      #    {
-      #      describedByEntityStatement: source.legal_entity? ? statement_id(source) : nil,
-      #      describedByPersonStatement: source.natural_person? ? statement_id(source) : nil,
-      #    }.compact
-      #  end
-      #end
-      #def ocs_unspecified_reason(unknown_person)
-      #  return if statement_id_calculator.generates_statement?(unknown_person)
-      #  case unknown_person.unknown_reason_code
-      #  when 'no-individual-or-entity-with-signficant-control',
-      #       'no-individual-or-entity-with-signficant-control-partnership'
-      #    'no-beneficial-owners'
-      #  when 'disclosure-transparency-rules-chapter-five-applies',
-      #       'psc-exempt-as-trading-on-regulated-market',
-      #       'psc-exempt-as-shares-admitted-on-market'
-      #    'subject-exempt-from-disclosure'
-      #  else # 'steps-to-find-psc-not-yet-completed', 'steps-to-find-psc-not-yet-completed-partnership'
-      #    'unknown'
-      #  end
-      #end
 
       def interests
         (data.natures_of_control || []).map do |i|
-          entry = interest_parser.call(i)  
-          share = entry.fetch(:share, {})
+          entry = interest_parser.call(i)
+          next unless entry
+
+          share = entry.share
 
           RegisterBodsV2::Interest[{
-            type: entry[:type],
-            interestLevel: nil,
-            beneficialOwnershipOrControl: nil,
-            details: entry[:details],
-            RegisterBodsV2::Share.new(
-              exact: share[:exact],
-              maximum: share[:maximum],
-              minimum: share[:minimum],
-              exclusiveMinimum: share[:exclusiveMinimum],
-              exclusiveMaximum: share[:exclusiveMaximum],
-            ),
+            type: entry.type,
+            details: entry.details,
+            share: RegisterBodsV2::Share[{
+              exact: share.exact,
+              maximum: share.maximum,
+              minimum: share.minimum,
+              exclusiveMinimum: share.exclusiveMinimum,
+              exclusiveMaximum: share.exclusiveMaximum
+            }.compact],
             startDate: data.notified_on.presence.try(:to_s),
             endDate: data.ceased_on.presence.try(:to_s)
           }.compact]
-        end
+        end.compact
+      end
+
+      def publication_details
+        # UNIMPLEMENTED IN REGISTER
+        RegisterBodsV2::PublicationDetails.new(
+          publicationDate: Time.now.utc.to_date.to_s, # TODO: fix publication date
+          bodsVersion: RegisterBodsV2::BODS_VERSION,
+          license: RegisterBodsV2::BODS_LICENSE,
+          publisher: RegisterBodsV2::PUBLISHER
+        )
       end
 
       def source
-        
-      end
-      def ocs_source(relationship, imports)
-        return ocs_source_from_raw_data(relationship, imports) unless relationship.import_ids.empty?
-        
-        provenance = relationship.provenance
-        return if provenance.blank?
-        return unless SOURCE_TYPES_MAP.key?(provenance.source_name)
-
-        {
-          type:        SOURCE_TYPES_MAP[provenance.source_name],
-          description: SOURCE_NAMES_MAP.fetch(provenance.source_name, provenance.source_name),
-          url:         provenance.source_url.presence,
-          retrievedAt: provenance.retrieved_at.iso8601,
-        }.compact
+        # UNIMPLEMENTED IN REGISTER
+        # implemented for relationships
+        RegisterBodsV2::Source.new(
+          type: RegisterBodsV2::SourceTypes['officialRegister'],
+          description: 'GB Persons Of Significant Control Register',
+          url: "http://download.companieshouse.gov.uk/en_pscdata.html", # TODO: link to snapshot?
+          retrievedAt: Time.now.utc.to_date.to_s, # TODO: fix publication date, # TODO: add retrievedAt to record iso8601
+          assertedBy: nil # TODO: if it is a combination of sources (PSC and OpenCorporates), is it us?
+        )
       end
 
-      def ocs_source_from_raw_data(relationship, imports)
-        imports = relationship.import_ids.map { |import_id| imports[import_id.to_s] }.compact
-        raise EmptyImportsError if imports.empty?
-
-        if imports.map(&:data_source_id).uniq.length > 1
-          raise "[#{self.class.name}] Relationship: #{relationship.id} comes from multiple data sources, can't produce a single Source for it"
-        end
-
-        most_recent_import = imports.max_by(&:created_at)
-        data_source = most_recent_import.data_source
-
-        {
-          type:        data_source.types,
-          description: SOURCE_NAMES_MAP.fetch(data_source.name, data_source.name),
-          url:         data_source.url,
-          retrievedAt: most_recent_import.created_at.iso8601,
-        }.compact
+      def hasher(data)
+        XXhash.xxh64(data).to_s
       end
     end
   end

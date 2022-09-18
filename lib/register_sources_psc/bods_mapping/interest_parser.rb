@@ -3,7 +3,7 @@ require 'register_bods_v2/structs/interest'
 module RegisterSourcesPsc
   module BodsMapping
     class InterestParser
-      def initialize(error_adapter: ERROR_ADAPTER)
+      def initialize(error_adapter: nil)
         @error_adapter = error_adapter
       end
 
