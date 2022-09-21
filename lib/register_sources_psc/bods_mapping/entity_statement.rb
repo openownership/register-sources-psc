@@ -64,18 +64,23 @@ module RegisterSourcesPsc
       def resolver_response
         return @resolver_response if @resolver_response
 
+        return unless data.kind == CorporateEntityKinds['corporate-entity-person-with-significant-control']
         # TODO: this is for corporate entities
-        @resolver_response = entity_resolver.resolve(
-          RegisterSourcesOc::ResolverRequest.new(
-            company_number: data.identification.registration_number,
-            country: data.identification.country_registered,
-            name: data.name,
+        begin
+          @resolver_response = entity_resolver.resolve(
+            RegisterSourcesOc::ResolverRequest[{
+              company_number: data.identification.registration_number || psc_record.company_number,
+              country: data.identification.country_registered,
+              name: data.name,
+            }.compact]
           )
-        )
+        rescue => e
+          print "FAILURE FOR RECORD #{psc_record.to_h}\n"
+          raise
+        end
       end
 
       def statement_id
-        # NO LONGER DEPENDS ON MONGO - UNSTABLE - MATCH OLD RECORDS?
         id = 'register_entity_id' # TODO: implement
         self_updated_at = publication_details.publicationDate # TODO: use statement retrievedAt?
         ID_PREFIX + hasher("openownership-register/entity/#{id}/#{self_updated_at}")
@@ -99,6 +104,7 @@ module RegisterSourcesPsc
       end
 
       def incorporated_in_jurisdiction
+        return unless resolver_response
         jurisdiction_code = resolver_response.jurisdiction_code
         return unless jurisdiction_code
       
@@ -106,11 +112,11 @@ module RegisterSourcesPsc
         country = ISO3166::Country[code]
         return nil if country.blank?
 
-        Bods::Jurisdiction.new(name: country.name, code: country.alpha2)
+        RegisterBodsV2::Jurisdiction.new(name: country.name, code: country.alpha2)
       end
 
       def founding_date
-        return unless resolver_response.company
+        return unless resolver_response && resolver_response.company
         date = resolver_response.company.incorporation_date&.to_date
         return unless date
         date.try(:iso8601)
@@ -120,7 +126,7 @@ module RegisterSourcesPsc
       end
 
       def dissolution_date
-        return unless resolver_response.company
+        return unless resolver_response && resolver_response.company
         date = resolver_response.company.dissolution_date&.to_date
         return unless date
         date.try(:iso8601)

@@ -76,7 +76,7 @@ module RegisterSourcesPsc
         country = ISO3166::Country[code]
         return nil if country.blank?
 
-        Bods::Jurisdiction.new(name: country.name, code: country.alpha2)
+        RegisterBodsV2::Jurisdiction.new(name: country.name, code: country.alpha2)
       end
 
       def founding_date

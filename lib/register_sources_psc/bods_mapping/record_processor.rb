@@ -21,8 +21,10 @@ module RegisterSourcesPsc
         entity_statement_mapper: BodsMapping::EntityStatement,
         child_entity_statement_mapper: BodsMapping::ChildEntityStatement,
         ownership_or_control_statement_mapper: BodsMapping::OwnershipOrControlStatement,
+        bods_publisher: nil
       )
         @entity_resolver = entity_resolver
+        @bods_publisher = bods_publisher
         @interest_parser = interest_parser || InterestParser.new
         @person_statement_mapper = person_statement_mapper
         @entity_statement_mapper = entity_statement_mapper
@@ -32,17 +34,29 @@ module RegisterSourcesPsc
 
       def process(psc_record)
         child_entity = map_child_entity(psc_record)
-        parent_entity = map_parent_entity(psc_record)
-        relationship = map_relationship(psc_record, child_entity, parent_entity)
+        child_entity = child_entity && bods_publisher.publish(child_entity)
+        if child_entity
+          print child_entity.to_h.to_json, "\n"
+        end
 
-        statements = [child_entity, parent_entity, relationship].compact
+        parent_entity = map_parent_entity(psc_record)
+        parent_entity = parent_entity && bods_publisher.publish(parent_entity)
+        if parent_entity
+          print parent_entity.to_h.to_json, "\n"
+        end
+
+        relationship = map_relationship(psc_record, child_entity, parent_entity)
+        relationship = relationship && bods_publisher.publish(relationship)
+        if relationship
+          print relationship.to_h.to_json, "\n"
+        end
       end
 
       private
 
       attr_reader :entity_resolver, :interest_parser, :person_statement_mapper,
         :entity_statement_mapper, :child_entity_statement_mapper,
-        :ownership_or_control_statement_mapper
+        :ownership_or_control_statement_mapper, :bods_publisher
 
       def map_child_entity(psc_record)
         BodsMapping::ChildEntityStatement.call(

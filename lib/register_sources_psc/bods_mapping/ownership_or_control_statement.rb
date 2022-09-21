@@ -113,18 +113,10 @@ module RegisterSourcesPsc
           entry = interest_parser.call(i)
           next unless entry
 
-          share = entry.share
-
           RegisterBodsV2::Interest[{
             type: entry.type,
             details: entry.details,
-            share: RegisterBodsV2::Share[{
-              exact: share.exact,
-              maximum: share.maximum,
-              minimum: share.minimum,
-              exclusiveMinimum: share.exclusiveMinimum,
-              exclusiveMaximum: share.exclusiveMaximum
-            }.compact],
+            share: entry.share,
             startDate: data.notified_on.presence.try(:to_s),
             endDate: data.ceased_on.presence.try(:to_s)
           }.compact]
