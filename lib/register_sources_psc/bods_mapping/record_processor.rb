@@ -35,21 +35,12 @@ module RegisterSourcesPsc
       def process(psc_record)
         child_entity = map_child_entity(psc_record)
         child_entity = child_entity && bods_publisher.publish(child_entity)
-        if child_entity
-          print child_entity.to_h.to_json, "\n"
-        end
 
         parent_entity = map_parent_entity(psc_record)
         parent_entity = parent_entity && bods_publisher.publish(parent_entity)
-        if parent_entity
-          print parent_entity.to_h.to_json, "\n"
-        end
 
         relationship = map_relationship(psc_record, child_entity, parent_entity)
         relationship = relationship && bods_publisher.publish(relationship)
-        if relationship
-          print relationship.to_h.to_json, "\n"
-        end
       end
 
       private

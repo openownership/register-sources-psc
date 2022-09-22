@@ -20,6 +20,7 @@ module RegisterSourcesPsc
   module BodsMapping
     class EntityStatement
       ID_PREFIX = 'openownership-register-'.freeze
+      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
 
       def self.call(psc_record, **kwargs)
         new(psc_record, **kwargs).call
@@ -65,7 +66,7 @@ module RegisterSourcesPsc
         return @resolver_response if @resolver_response
 
         return unless data.kind == CorporateEntityKinds['corporate-entity-person-with-significant-control']
-        # TODO: this is for corporate entities
+
         begin
           @resolver_response = entity_resolver.resolve(
             RegisterSourcesOc::ResolverRequest[{
@@ -96,7 +97,21 @@ module RegisterSourcesPsc
       end
 
       def identifiers
-        psc_self_link_identifiers # add oc identifiers
+        psc_self_link_identifiers + [open_corporates_identifier].compact
+      end
+
+      def open_corporates_identifier
+        return unless resolver_response && resolver_response.resolved
+
+        jurisdiction = resolver_response.jurisdiction_code
+        company_number = resolver_response.company_number
+        oc_url = "https://opencorporates.com/companies/#{jurisdiction}/#{company_number}"
+
+        RegisterBodsV2::Identifier[{
+          id: oc_url,
+          schemeName: OPEN_CORPORATES_SCHEME_NAME,
+          uri: oc_url
+        }]
       end
 
       def name

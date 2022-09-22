@@ -17,6 +17,7 @@ module RegisterSourcesPsc
   module BodsMapping
     class ChildEntityStatement
       ID_PREFIX = 'openownership-register-'.freeze
+      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
 
       def self.call(company_number, **kwargs)
         new(company_number, **kwargs).call
@@ -39,8 +40,9 @@ module RegisterSourcesPsc
               scheme: 'GB-COH',
               schemeName: 'Companies House',
               id: company_number
-            )
-          ],
+            ),
+            open_corporates_identifier
+          ].compact,
           foundingDate: founding_date,
           dissolutionDate: dissolution_date,
           publicationDetails: publication_details,
@@ -62,6 +64,20 @@ module RegisterSourcesPsc
             jurisdiction_code: 'gb'
           )
         )
+      end
+
+      def open_corporates_identifier
+        return unless resolver_response && resolver_response.resolved
+
+        jurisdiction = resolver_response.jurisdiction_code
+        company_number = resolver_response.company_number
+        oc_url = "https://opencorporates.com/companies/#{jurisdiction}/#{company_number}"
+
+        RegisterBodsV2::Identifier[{
+          id: oc_url,
+          schemeName: OPEN_CORPORATES_SCHEME_NAME,
+          uri: oc_url
+        }]
       end
 
       def statement_id
