@@ -8,7 +8,7 @@ module RegisterSourcesPsc
   class SuperSecure < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute? :ceased, Types::Nominal::Bool
+    attribute? :ceased, Types::Params::Bool
     attribute? :description, SuperSecureDescriptions
     attribute :etag, Types::String
     attribute? :kind, SuperSecureKinds
