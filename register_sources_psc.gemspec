@@ -10,14 +10,14 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Write a short summary, because RubyGems requires one."
   spec.description = "Write a longer description or delete this line."
-  spec.homepage = "https://github.com/openownership/register_sources_psc"
+  spec.homepage = "https://github.com/openownership/register-sources-psc"
   spec.required_ruby_version = ">= 2.7"
 
-  spec.metadata["allowed_push_host"] = "https://github.com/openownership/register_sources_psc"
+  spec.metadata["allowed_push_host"] = "https://github.com/openownership/register-sources-psc"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/openownership/register_sources_psc"
-  spec.metadata["changelog_uri"] = "https://github.com/openownership/register_sources_psc"
+  spec.metadata["source_code_uri"] = "https://github.com/openownership/register-sources-psc"
+  spec.metadata["changelog_uri"] = "https://github.com/openownership/register-sources-psc"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
