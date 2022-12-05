@@ -1,11 +1,6 @@
 require 'register_sources_psc/config/elasticsearch'
 
 require 'register_sources_psc/structs/company_record'
-require 'register_sources_psc/structs/corporate_entity'
-require 'register_sources_psc/structs/individual'
-require 'register_sources_psc/structs/legal_person'
-require 'register_sources_psc/structs/statement'
-require 'register_sources_psc/structs/super_secure'
 
 module RegisterSourcesPsc
   module Repositories

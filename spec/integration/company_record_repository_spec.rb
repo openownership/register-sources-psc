@@ -62,10 +62,9 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
 
   before do
     index_creator = RegisterSourcesPsc::Services::EsIndexCreator.new(
-      company_record_index: index,
       client: es_client
     )
-    index_creator.create_company_record_index
+    index_creator.create_es_index(index)
   end
 
   describe '#store' do
