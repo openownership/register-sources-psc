@@ -6,6 +6,11 @@ require 'register_sources_psc/structs/legal_person'
 require 'register_sources_psc/structs/statement'
 require 'register_sources_psc/structs/super_secure'
 
+require 'register_sources_psc/structs/corporate_entity_beneficial_owner'
+require 'register_sources_psc/structs/individual_beneficial_owner'
+require 'register_sources_psc/structs/legal_person_beneficial_owner'
+require 'register_sources_psc/structs/super_secure_beneficial_owner'
+
 module RegisterSourcesPsc
   UnknownRecordKindError = Class.new(StandardError)
 
@@ -23,6 +28,14 @@ module RegisterSourcesPsc
       Statement.new(**value)
     when SuperSecureKinds['super-secure-person-with-significant-control']
       SuperSecure.new(**value)
+    when CorporateEntityBeneficialOwnerKinds['corporate-entity-beneficial-owner']
+      CorporateEntityBeneficialOwner.new(**value)
+    when IndividualBeneficialOwnerKinds['individual-beneficial-owner']
+      IndividualBeneficialOwner.new(**value)
+    when LegalPersonBeneficialOwnerKinds['legal-person-beneficial-owner']
+      LegalPersonBeneficialOwner.new(**value)
+    when SuperSecureBeneficialOwnerKinds['super-secure-beneficial-owner']
+      SuperSecureBeneficialOwner.new(**value)
     else
       raise UnknownRecordKindError
     end
@@ -33,5 +46,14 @@ module RegisterSourcesPsc
 
     attribute :company_number, Types::String.optional.default(nil)
     attribute :data, CompanyRecordData
+
+    def roe?
+      [
+        CorporateEntityBeneficialOwnerKinds['corporate-entity-beneficial-owner'],
+        IndividualBeneficialOwnerKinds['individual-beneficial-owner'],
+        LegalPersonBeneficialOwnerKinds['legal-person-beneficial-owner'],
+        SuperSecureBeneficialOwnerKinds['super-secure-beneficial-owner']
+      ].include? data.kind
+    end
   end
 end

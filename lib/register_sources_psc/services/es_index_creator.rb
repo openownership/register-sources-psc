@@ -3,16 +3,12 @@ require 'register_sources_psc/config/elasticsearch'
 module RegisterSourcesPsc
   module Services
     class EsIndexCreator
-      def initialize(
-        client: Config::ELASTICSEARCH_CLIENT,
-        company_record_index: Config::ES_COMPANY_RECORD_INDEX
-      )
+      def initialize(client: Config::ELASTICSEARCH_CLIENT)
         @client = client
-        @company_record_index = company_record_index
       end
 
-      def create_company_record_index
-        client.indices.create index: company_record_index, body: {
+      def create_es_index(es_index)
+        client.indices.create index: es_index, body: {
           mappings: {
             properties: {
               "company_number": {
@@ -99,6 +95,9 @@ module RegisterSourcesPsc
                       },
                     }
                   },
+                  "is_sanctioned": {
+                    "type": "boolean"
+                  },
                   "kind": {
                     "type": "keyword"
                   },
@@ -175,6 +174,35 @@ module RegisterSourcesPsc
                   "notified_on": {
                     "type": "date"
                   },
+                  "principal_office_address": {
+                    "type": "nested",
+                    "properties": {
+                      "address_line_1": {
+                        "type": "keyword"
+                      },
+                      "address_line_2": {
+                        "type": "keyword"
+                      },
+                      "care_of": {
+                        "type": "keyword"
+                      },
+                      "country": {
+                        "type": "keyword"
+                      },
+                      "locality": {
+                        "type": "keyword"
+                      },
+                      "postal_code": {
+                        "type": "keyword"
+                      },
+                      "premises": {
+                        "type": "keyword"
+                      },
+                      "region": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
                   "restrictions_notice_withdrawal_reason": {
                     "type": "keyword"
                   },
@@ -190,7 +218,7 @@ module RegisterSourcesPsc
 
       private
 
-      attr_reader :client, :company_record_index
+      attr_reader :client
     end
   end
 end
