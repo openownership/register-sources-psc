@@ -1,4 +1,5 @@
 require 'elasticsearch'
+require 'ostruct'
 require 'register_sources_psc/repositories/company_record_repository'
 require 'register_sources_psc/services/es_index_creator'
 require 'register_sources_psc/structs/company_record'
@@ -92,6 +93,12 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       # When records do not exist
       expect(subject.get("missing")).to be_nil
       expect(subject.list_by_company_number("missing")).to eq []
+
+      # get identifiers
+      identifiers = [
+        OpenStruct.new(id: corporate_record.data.links[:self], schemeName: 'GB Persons Of Significant Control Register'),
+      ]
+      expect(subject.get_by_bods_identifiers(identifiers)).to eq [corporate_record]
     end
 
     it 'stores missing' do

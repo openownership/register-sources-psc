@@ -88,6 +88,79 @@ module RegisterSourcesPsc
         true
       end
 
+      def get_by_bods_identifiers(identifiers)
+        return [] unless identifiers
+
+        company_ids = []
+        links = []
+        identifiers.each do |identifier|
+          if identifier.schemeName == 'GB Persons Of Significant Control Register'
+            links << identifier.id
+          else
+            company_ids << identifier.id
+          end
+        end
+
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: {
+                  should: company_ids.map { |company_id|
+                    {
+                      bool: {
+                        must: [
+                          { match: { "company_number": { query: company_id } } },
+                        ]
+                      }
+                    }
+                  } + company_ids.map { |company_id|
+                    {
+                      bool: {
+                        must: [
+                          {
+                            nested: {
+                              path: "data.identification",
+                              query: {
+                                bool: {
+                                  must: [
+                                    { match: { "data.identification.registration_number": { query: company_id } } },
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  } + links.map { |link|
+                    {
+                      bool: {
+                        must: [
+                          {
+                            nested: {
+                              path: "data.links",
+                              query: {
+                                bool: {
+                                  must: [
+                                    { match: { "data.links.self": { query: link } } },
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
       private
 
       attr_reader :client, :index
