@@ -60,7 +60,8 @@ module RegisterSourcesPsc
                     }
                   ]
                 }
-              }
+              },
+              size: 10_000,
             }
           )
         )
@@ -89,8 +90,6 @@ module RegisterSourcesPsc
       end
 
       def get_by_bods_identifiers(identifiers)
-        return [] unless identifiers
-
         company_ids = []
         links = []
         identifiers.each do |identifier|
@@ -100,6 +99,8 @@ module RegisterSourcesPsc
             company_ids << identifier.id
           end
         end
+
+        return [] if links.empty? && company_ids.empty?
 
         process_results(
           client.search(
@@ -154,8 +155,9 @@ module RegisterSourcesPsc
                       }
                     }
                   }
-                }
-              }
+                },
+              },
+              size: 10_000,
             }
           )
         ).map(&:record)
