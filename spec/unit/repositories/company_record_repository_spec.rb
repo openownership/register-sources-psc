@@ -107,7 +107,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
               }
             ]
           }
-        }
+        },
+        size: 10_000
       }
     end
 
