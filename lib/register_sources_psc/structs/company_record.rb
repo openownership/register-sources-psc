@@ -52,7 +52,7 @@ module RegisterSourcesPsc
         CorporateEntityBeneficialOwnerKinds['corporate-entity-beneficial-owner'],
         IndividualBeneficialOwnerKinds['individual-beneficial-owner'],
         LegalPersonBeneficialOwnerKinds['legal-person-beneficial-owner'],
-        SuperSecureBeneficialOwnerKinds['super-secure-beneficial-owner']
+        SuperSecureBeneficialOwnerKinds['super-secure-beneficial-owner'],
       ].include? data.kind
     end
   end

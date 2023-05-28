@@ -4,7 +4,7 @@ require 'register_sources_psc/structs/company_record'
 
 module RegisterSourcesPsc
   module Repositories
-    class CompanyRecordRepository      
+    class CompanyRecordRepository
       UnknownRecordKindError = Class.new(StandardError)
       ElasticsearchError = Class.new(StandardError)
 
@@ -18,7 +18,7 @@ module RegisterSourcesPsc
       def get(etag)
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 nested: {
@@ -28,25 +28,25 @@ module RegisterSourcesPsc
                       must: [
                         {
                           match: {
-                            "data.etag": {
-                              query: etag
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          )
+                            'data.etag': {
+                              query: etag,
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          ),
         ).first&.record
       end
 
       def list_by_company_number(company_number)
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 bool: {
@@ -54,16 +54,16 @@ module RegisterSourcesPsc
                     {
                       match: {
                         company_number: {
-                          query: company_number
-                        }
-                      }
-                    }
-                  ]
-                }
+                          query: company_number,
+                        },
+                      },
+                    },
+                  ],
+                },
               },
               size: 10_000,
-            }
-          )
+            },
+          ),
         )
       end
 
@@ -72,11 +72,11 @@ module RegisterSourcesPsc
 
         operations = records.map do |record|
           {
-            index:  {
+            index: {
               _index: index,
               _id: calculate_id(record),
-              data: record.to_h
-            }
+              data: record.to_h,
+            },
           }
         end
 
@@ -104,7 +104,7 @@ module RegisterSourcesPsc
 
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 bool: {
@@ -112,9 +112,9 @@ module RegisterSourcesPsc
                     {
                       bool: {
                         must: [
-                          { match: { "company_number": { query: company_id } } },
-                        ]
-                      }
+                          { match: { company_number: { query: company_id } } },
+                        ],
+                      },
                     }
                   } + company_ids.map { |company_id|
                     {
@@ -126,16 +126,16 @@ module RegisterSourcesPsc
                               query: {
                                 bool: {
                                   must: [
-                                    { match: { "data.identification.registration_number": { query: company_id } } },
-                                  ]
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
+                                    { match: { 'data.identification.registration_number': { query: company_id } } },
+                                  ],
+                                },
+                              },
+                            },
+                          },
+                        ],
+                      },
                     }
-                  } + links.map { |link|
+                  } + links.map do |link|
                     {
                       bool: {
                         must: [
@@ -145,21 +145,21 @@ module RegisterSourcesPsc
                               query: {
                                 bool: {
                                   must: [
-                                    { match: { "data.links.self": { query: link } } },
-                                  ]
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
+                                    { match: { 'data.links.self': { query: link } } },
+                                  ],
+                                },
+                              },
+                            },
+                          },
+                        ],
+                      },
                     }
-                  }
+                  end,
                 },
               },
               size: 10_000,
-            }
-          )
+            },
+          ),
         ).map(&:record)
       end
 

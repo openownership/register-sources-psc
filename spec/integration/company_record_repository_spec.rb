@@ -5,14 +5,14 @@ require 'register_sources_psc/services/es_index_creator'
 require 'register_sources_psc/structs/company_record'
 
 RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
-  subject { described_class.new(client: es_client, index: index) }
+  subject { described_class.new(client: es_client, index:) }
 
   let(:index) { SecureRandom.uuid }
   let(:es_client) do
     Elasticsearch::Client.new(
-      host: "http://elastic:#{ENV['ELASTICSEARCH_PASSWORD']}@#{ENV['ELASTICSEARCH_HOST']}:#{ENV['ELASTICSEARCH_PORT']}",
+      host: "http://elastic:#{ENV.fetch('ELASTICSEARCH_PASSWORD', nil)}@#{ENV.fetch('ELASTICSEARCH_HOST', nil)}:#{ENV.fetch('ELASTICSEARCH_PORT', nil)}",
       transport_options: { ssl: { verify: false } },
-      log: false
+      log: false,
     )
   end
 
@@ -20,8 +20,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
     RegisterSourcesPsc::CompanyRecord.new(
       **JSON.parse(
         File.read('spec/fixtures/psc_corporate.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
@@ -29,8 +29,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
     RegisterSourcesPsc::CompanyRecord.new(
       **JSON.parse(
         File.read('spec/fixtures/psc_individual.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
@@ -38,8 +38,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
     RegisterSourcesPsc::CompanyRecord.new(
       **JSON.parse(
         File.read('spec/fixtures/psc_legal.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
@@ -47,8 +47,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
     RegisterSourcesPsc::CompanyRecord.new(
       **JSON.parse(
         File.read('spec/fixtures/psc_statement.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
@@ -56,14 +56,14 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
     RegisterSourcesPsc::CompanyRecord.new(
       **JSON.parse(
         File.read('spec/fixtures/psc_super_secure.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
   before do
     index_creator = RegisterSourcesPsc::Services::EsIndexCreator.new(
-      client: es_client
+      client: es_client,
     )
     index_creator.create_es_index(index)
   end
@@ -105,8 +105,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       records = [
         RegisterSourcesPsc::CompanyRecord.new(
           **JSON.parse('{"company_number":"09672611","data":{"ceased":1,"description":"super-secure-persons-with-significant-control","etag":"dd596565a737cd3f27be40ec7d04893fff08f7e6","kind":"super-secure-person-with-significant-control","links":{"self":"/company/09672611/persons-with-significant-control/super-secure/YbK2vqv5S4NMgHhJbcCYyla8i4E"}}}'),
-          symbolize_names: true
-        )
+          symbolize_names: true,
+        ),
       ]
       subject.store(records)
     end
