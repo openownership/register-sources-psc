@@ -3,12 +3,12 @@ require 'register_sources_psc/structs/super_secure'
 RSpec.describe RegisterSourcesPsc::SuperSecure do
   let(:valid_params) do
     {
-      "etag": "36c99208e0c14294355583c965e4c3a0",
-      "description": "super-secure-persons-with-significant-control",
+      etag: "36c99208e0c14294355583c965e4c3a0",
+      description: "super-secure-persons-with-significant-control",
       kind: "super-secure-person-with-significant-control",
-      "links": {
-        "self": "/company/1234567/persons-with-significant-control/super-secure/abcdef123456"
-      }
+      links: {
+        self: "/company/1234567/persons-with-significant-control/super-secure/abcdef123456",
+      },
     }
   end
 

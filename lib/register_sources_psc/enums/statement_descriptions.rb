@@ -20,6 +20,6 @@ module RegisterSourcesPsc
     'no-beneficial-owner-identified', # "No beneficial owners have been identified"
     'at-least-one-beneficial-owner-unidentified', # "Some beneficial owners have been identified and all required information can be provided"
     'information-not-provided-for-at-least-one-beneficial-owner', # "All beneficial owners have been identified but only some required information can be provided"
-    'at-least-one-beneficial-owner-unidentified-and-information-not-provided-for-at-least-one-beneficial-owner' # "Some beneficial owners have been identified and only some required information can be provided"    
+    'at-least-one-beneficial-owner-unidentified-and-information-not-provided-for-at-least-one-beneficial-owner', # "Some beneficial owners have been identified and only some required information can be provided"
   )
 end

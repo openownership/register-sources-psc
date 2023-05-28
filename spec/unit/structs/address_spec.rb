@@ -3,10 +3,10 @@ require 'register_sources_psc/structs/address'
 RSpec.describe RegisterSourcesPsc::Address do
   let(:valid_address) do
     {
-      "premises": "123 Main Street",
-      "locality": "Example Town",
+      premises: "123 Main Street",
+      locality: "Example Town",
       region: "Exampleshire",
-      "postal_code": "EX4 2MP"
+      postal_code: "EX4 2MP",
     }
   end
 

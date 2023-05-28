@@ -3,8 +3,8 @@ require 'register_sources_psc/structs/name_elements'
 RSpec.describe RegisterSourcesPsc::NameElements do
   let(:valid_params) do
     {
-      "forename": "Joe",
-      "surname": "Bloggs"
+      forename: "Joe",
+      surname: "Bloggs",
     }
   end
 
