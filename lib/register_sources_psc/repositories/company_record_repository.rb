@@ -44,21 +44,52 @@ module RegisterSourcesPsc
       end
 
       def list_by_company_number(company_number)
+        # strip leading zeros
+        while company_number[0] == "0"
+          company_number = company_number[1..]
+        end
+
+        # make list
+        company_numbers = []
+        while company_number.length <= 8
+          company_numbers << company_number
+          company_number = "0#{company_number}"
+        end
+
         process_results(
           client.search(
             index:,
             body: {
               query: {
                 bool: {
-                  must: [
+                  should: company_numbers.map { |company_num|
                     {
                       match: {
                         company_number: {
-                          query: company_number,
+                          query: company_num,
                         },
                       },
-                    },
-                  ],
+                    }
+                  } + company_numbers.map do |company_num|
+                    {
+                      nested: {
+                        path: "data.identification",
+                        query: {
+                          bool: {
+                            must: [
+                              {
+                                match: {
+                                  'data.identification.registration_number': {
+                                    query: company_num,
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    }
+                  end,
                 },
               },
               size: 10_000,
