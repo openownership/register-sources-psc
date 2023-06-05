@@ -97,11 +97,54 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       {
         query: {
           bool: {
-            must: [
+            should: [
               {
                 match: {
                   company_number: {
-                    query: company_record.company_number,
+                    query: "1234567",
+                  },
+                },
+              },
+              {
+                match: {
+                  company_number: {
+                    query: "01234567",
+                  },
+                },
+              },
+              {
+                nested: {
+                  path: "data.identification",
+                  query: {
+                    bool: {
+                      must: [
+                        {
+                          match: {
+                            'data.identification.registration_number': {
+                              query: "1234567",
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+              {
+                nested: {
+                  path: "data.identification",
+                  query: {
+                    bool: {
+                      must: [
+                        {
+                          match: {
+                            'data.identification.registration_number': {
+                              query: "01234567",
+                            },
+                          },
+                        },
+                      ],
+                    },
                   },
                 },
               },
