@@ -8,13 +8,7 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
   subject { described_class.new(client: es_client, index:) }
 
   let(:index) { SecureRandom.uuid }
-  let(:es_client) do
-    Elasticsearch::Client.new(
-      host: "http://elastic:#{ENV.fetch('ELASTICSEARCH_PASSWORD', nil)}@#{ENV.fetch('ELASTICSEARCH_HOST', nil)}:#{ENV.fetch('ELASTICSEARCH_PORT', nil)}",
-      transport_options: { ssl: { verify: false } },
-      log: false,
-    )
-  end
+  let(:es_client) { Elasticsearch::Client.new }
 
   let(:corporate_record) do
     RegisterSourcesPsc::CompanyRecord.new(
