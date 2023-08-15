@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:openownership/register-common.git
+  remote: https://github.com/openownership/register-common.git
   revision: 32506b6f43ba07aa884263d4bf589abd9c3473df
   specs:
     register_common (0.1.0)
