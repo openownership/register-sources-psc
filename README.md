@@ -12,15 +12,12 @@ This library does not perform any ingestion of the PSC records, which is the pur
 
 ## Configuration
 
-The gem requires connection to an Elasticsearch Cluster. It has been tested with ES version v7.17.
+Install and boot [register-v2](https://github.com/openownership/register-v2).
 
-These credentials should be set in some ENV variables:
-```
-ELASTICSEARCH_HOST=
-ELASTICSEARCH_PORT=443
-ELASTICSEARCH_PROTOCOL=https
-ELASTICSEARCH_SSL_VERIFY=true
-ELASTICSEARCH_PASSWORD=
+Configure your environment using the example file:
+
+```sh
+cp .env.example .env
 ```
 
 As an initial setup stage, the index should be created:
@@ -34,9 +31,8 @@ index_creator.create_es_index RegisterSourcesPsc::Config::ES_OVERSEAS_RECORD_IND
 
 ## Testing
 
-The tests are executed using Docker and Docker Compose. To trigger the tests, run:
-```
-bin/test
-```
+Run the tests:
 
-Note: If the integration tests fail due to connection failure, it is probable the container is taking a while to start - check the ES container is healthy and try again.
+```sh
+docker compose run sources-psc test
+```
