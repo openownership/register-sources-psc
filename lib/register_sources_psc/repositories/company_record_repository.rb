@@ -120,7 +120,7 @@ module RegisterSourcesPsc
         true
       end
 
-      def get_by_bods_identifiers(identifiers)
+      def get_by_bods_identifiers(identifiers, per_page: nil)
         company_ids = []
         links = []
         identifiers.each do |identifier|
@@ -188,7 +188,7 @@ module RegisterSourcesPsc
                   end,
                 },
               },
-              size: 10_000,
+              size: per_page || 10_000,
             },
           ),
         ).map(&:record)
