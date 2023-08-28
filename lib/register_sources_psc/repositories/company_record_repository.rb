@@ -10,10 +10,23 @@ module RegisterSourcesPsc
 
       SearchResult = Struct.new(:record, :score)
 
+      class SearchResults < Array
+        def initialize(arr, total_count: nil, aggs: nil)
+          @total_count = total_count || arr.to_a.count
+          @aggs = aggs
+
+          super(arr)
+        end
+
+        attr_reader :total_count, :aggs
+      end
+
       def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ELASTICSEARCH_INDEX_COMPANY)
         @client = client
         @index = index
       end
+
+      attr_reader :client, :index
 
       def get(etag)
         process_results(
@@ -117,7 +130,7 @@ module RegisterSourcesPsc
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-      def get_by_bods_identifiers(identifiers, per_page: nil)
+      def build_get_by_bods_identifiers(identifiers)
         company_ids = []
         links = []
         identifiers.each do |identifier|
@@ -128,13 +141,17 @@ module RegisterSourcesPsc
           end
         end
 
-        return [] if links.empty? && company_ids.empty?
+        return if links.empty? && company_ids.empty?
 
-        process_results(
-          client.search(
-            index:,
-            body: {
-              query: {
+        {
+          bool: {
+            must: [
+              {
+                term: {
+                  _index: index,
+                },
+              },
+              {
                 bool: {
                   should: company_ids.map { |company_id|
                     {
@@ -182,19 +199,16 @@ module RegisterSourcesPsc
                         ]
                       }
                     }
-                  end
+                  end,
                 }
-              },
-              size: per_page || 10_000
-            }
-          )
-        ).map(&:record)
+              }
+            ]
+          }
+        }
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       private
-
-      attr_reader :client, :index
 
       def calculate_id(record)
         "#{record.company_number}:#{record.data.etag}"
@@ -203,12 +217,17 @@ module RegisterSourcesPsc
       def process_results(results)
         hits = results.dig('hits', 'hits') || []
         hits = hits.sort { |hit| hit['_score'] }.reverse # rubocop:disable Lint/UnexpectedBlockArity # FIXME
+        total_count = results.dig('hits', 'total', 'value') || 0
 
         mapped = hits.map do |hit|
           SearchResult.new(map_es_record(hit['_source']), hit['_score'])
         end
 
-        mapped.sort_by(&:score).reverse
+        SearchResults.new(
+          mapped.sort_by(&:score).reverse,
+          total_count:,
+          aggs: results['aggregations'],
+        )
       end
 
       def map_es_record(record)
