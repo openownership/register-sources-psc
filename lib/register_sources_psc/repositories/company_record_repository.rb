@@ -3,6 +3,8 @@
 require_relative '../config/elasticsearch'
 require_relative '../structs/company_record'
 
+BodsIdentifier = Struct.new(:id, :schemeName)
+
 module RegisterSourcesPsc
   module Repositories
     class CompanyRecordRepository
@@ -200,10 +202,10 @@ module RegisterSourcesPsc
                       }
                     }
                   end,
-                }
-              }
-            ]
-          }
+                },
+              },
+            ],
+          },
         }
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
