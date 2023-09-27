@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/config/elasticsearch'
 
 require 'register_sources_psc/structs/company_record'
@@ -22,32 +24,30 @@ module RegisterSourcesPsc
             body: {
               query: {
                 nested: {
-                  path: "data",
+                  path: 'data',
                   query: {
                     bool: {
                       must: [
                         {
                           match: {
                             'data.etag': {
-                              query: etag,
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                },
-              },
-            },
-          ),
+                              query: etag
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          )
         ).first&.record
       end
 
       def list_by_company_number(company_number)
         # strip leading zeros
-        while company_number[0] == "0"
-          company_number = company_number[1..]
-        end
+        company_number = company_number[1..] while company_number[0] == '0'
 
         # make list
         company_numbers = []
@@ -66,35 +66,35 @@ module RegisterSourcesPsc
                     {
                       match: {
                         company_number: {
-                          query: company_num,
-                        },
-                      },
+                          query: company_num
+                        }
+                      }
                     }
                   } + company_numbers.map do |company_num|
                     {
                       nested: {
-                        path: "data.identification",
+                        path: 'data.identification',
                         query: {
                           bool: {
                             must: [
                               {
                                 match: {
                                   'data.identification.registration_number': {
-                                    query: company_num,
-                                  },
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      },
+                                    query: company_num
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
-                  end,
-                },
+                  end
+                }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         )
       end
 
@@ -106,20 +106,19 @@ module RegisterSourcesPsc
             index: {
               _index: index,
               _id: calculate_id(record),
-              data: record.to_h,
-            },
+              data: record.to_h
+            }
           }
         end
 
         result = client.bulk(body: operations)
 
-        if result['errors']
-          raise ElasticsearchError, errors: result['errors']
-        end
+        raise ElasticsearchError, errors: result['errors'] if result['errors']
 
         true
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def get_by_bods_identifiers(identifiers, per_page: nil)
         company_ids = []
         links = []
@@ -143,9 +142,9 @@ module RegisterSourcesPsc
                     {
                       bool: {
                         must: [
-                          { match: { company_number: { query: company_id } } },
-                        ],
-                      },
+                          { match: { company_number: { query: company_id } } }
+                        ]
+                      }
                     }
                   } + company_ids.map { |company_id|
                     {
@@ -153,18 +152,18 @@ module RegisterSourcesPsc
                         must: [
                           {
                             nested: {
-                              path: "data.identification",
+                              path: 'data.identification',
                               query: {
                                 bool: {
                                   must: [
-                                    { match: { 'data.identification.registration_number': { query: company_id } } },
-                                  ],
-                                },
-                              },
-                            },
-                          },
-                        ],
-                      },
+                                    { match: { 'data.identification.registration_number': { query: company_id } } }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
                     }
                   } + links.map do |link|
                     {
@@ -172,27 +171,28 @@ module RegisterSourcesPsc
                         must: [
                           {
                             nested: {
-                              path: "data.links",
+                              path: 'data.links',
                               query: {
                                 bool: {
                                   must: [
-                                    { match: { 'data.links.self': { query: link } } },
-                                  ],
-                                },
-                              },
-                            },
-                          },
-                        ],
-                      },
+                                    { match: { 'data.links.self': { query: link } } }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
                     }
-                  end,
-                },
+                  end
+                }
               },
-              size: per_page || 10_000,
-            },
-          ),
+              size: per_page || 10_000
+            }
+          )
         ).map(&:record)
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       private
 

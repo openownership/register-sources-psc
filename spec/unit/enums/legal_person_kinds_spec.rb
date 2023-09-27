@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/enums/legal_person_kinds'
 
 RSpec.describe RegisterSourcesPsc::LegalPersonKinds do

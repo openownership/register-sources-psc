@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/enums/psc_stream_resource_kinds'
 
 RSpec.describe RegisterSourcesPsc::PscStreamResourceKinds do

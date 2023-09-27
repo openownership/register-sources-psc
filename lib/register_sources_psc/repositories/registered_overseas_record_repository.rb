@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/config/elasticsearch'
 
 require 'register_sources_psc/structs/company_record'

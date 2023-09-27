@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/structs/psc_stream_event'
 
 RSpec.describe RegisterSourcesPsc::PscStreamEvent do
@@ -6,7 +8,7 @@ RSpec.describe RegisterSourcesPsc::PscStreamEvent do
       fields_changed: ['field1'],
       published_at: '2022-08-10',
       timepoint: 123,
-      type: 'changed',
+      type: 'changed'
     }
   end
 

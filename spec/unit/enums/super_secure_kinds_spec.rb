@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/enums/super_secure_kinds'
 
 RSpec.describe RegisterSourcesPsc::SuperSecureKinds do

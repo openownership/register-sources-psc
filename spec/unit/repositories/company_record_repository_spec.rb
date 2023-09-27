@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/repositories/company_record_repository'
 
 RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
@@ -8,35 +10,35 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
 
   let(:company_record_h) do
     {
-      company_number: "01234567",
+      company_number: '01234567',
       data: {
-        etag: "36c99208e0c14294355583c965e4c3f3",
-        kind: "individual-person-with-significant-control",
+        etag: '36c99208e0c14294355583c965e4c3f3',
+        kind: 'individual-person-with-significant-control',
         name_elements: {
-          forename: "Joe",
-          surname: "Bloggs",
+          forename: 'Joe',
+          surname: 'Bloggs'
         },
-        nationality: "British",
-        country_of_residence: "United Kingdom",
-        notified_on: "2016-04-06",
+        nationality: 'British',
+        country_of_residence: 'United Kingdom',
+        notified_on: '2016-04-06',
         address: {
-          premises: "123 Main Street",
-          locality: "Example Town",
-          region: "Exampleshire",
-          postal_code: "EX4 2MP",
+          premises: '123 Main Street',
+          locality: 'Example Town',
+          region: 'Exampleshire',
+          postal_code: 'EX4 2MP'
         },
         date_of_birth: {
           month: 10,
-          year: 1955,
+          year: 1955
         },
         natures_of_control: %w[
           ownership-of-shares-25-to-50-percent
           voting-rights-25-to-50-percent
         ],
         links: {
-          self: "/company/01234567/persons-with-significant-control/individual/abcdef123456789",
-        },
-      },
+          self: '/company/01234567/persons-with-significant-control/individual/abcdef123456789'
+        }
+      }
     }
   end
   let(:company_record) { RegisterSourcesPsc::CompanyRecord[company_record_h] }
@@ -46,22 +48,22 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       {
         query: {
           nested: {
-            path: "data",
+            path: 'data',
             query: {
               bool: {
                 must: [
                   {
                     match: {
                       'data.etag': {
-                        query: company_record.data.etag,
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
+                        query: company_record.data.etag
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     end
 
@@ -69,9 +71,9 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       it 'returns matching record' do
         expect(client).to receive(:search).with(
           index:,
-          body: expected_get_query,
+          body: expected_get_query
         ).and_return({
-                       'hits' => { 'hits' => [{ '_score' => 0.9, '_source' => company_record_h }] },
+                       'hits' => { 'hits' => [{ '_score' => 0.9, '_source' => company_record_h }] }
                      })
 
         expect(subject.get(company_record.data.etag)).to eq company_record
@@ -82,9 +84,9 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       it 'returns nil' do
         expect(client).to receive(:search).with(
           index:,
-          body: expected_get_query,
+          body: expected_get_query
         ).and_return({
-                       'hits' => { 'hits' => [] },
+                       'hits' => { 'hits' => [] }
                      })
 
         expect(subject.get(company_record.data.etag)).to be_nil
@@ -101,57 +103,57 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
               {
                 match: {
                   company_number: {
-                    query: "1234567",
-                  },
-                },
+                    query: '1234567'
+                  }
+                }
               },
               {
                 match: {
                   company_number: {
-                    query: "01234567",
-                  },
-                },
+                    query: '01234567'
+                  }
+                }
               },
               {
                 nested: {
-                  path: "data.identification",
+                  path: 'data.identification',
                   query: {
                     bool: {
                       must: [
                         {
                           match: {
                             'data.identification.registration_number': {
-                              query: "1234567",
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                },
+                              query: '1234567'
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
               },
               {
                 nested: {
-                  path: "data.identification",
+                  path: 'data.identification',
                   query: {
                     bool: {
                       must: [
                         {
                           match: {
                             'data.identification.registration_number': {
-                              query: "01234567",
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                },
-              },
-            ],
-          },
+                              query: '01234567'
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
         },
-        size: 10_000,
+        size: 10_000
       }
     end
 
@@ -159,13 +161,13 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       it 'returns results' do
         expect(client).to receive(:search).with(
           index:,
-          body: expected_list_query,
+          body: expected_list_query
         ).and_return({
-                       'hits' => { 'hits' => [{ '_score' => 0.9, '_source' => company_record_h }] },
+                       'hits' => { 'hits' => [{ '_score' => 0.9, '_source' => company_record_h }] }
                      })
 
         expect(subject.list_by_company_number(company_record.company_number)).to eq [
-          described_class::SearchResult.new(company_record, 0.9),
+          described_class::SearchResult.new(company_record, 0.9)
         ]
       end
     end
@@ -174,9 +176,9 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       it 'returns an empty array' do
         expect(client).to receive(:search).with(
           index:,
-          body: expected_list_query,
+          body: expected_list_query
         ).and_return({
-                       'hits' => { 'hits' => [] },
+                       'hits' => { 'hits' => [] }
                      })
 
         expect(subject.list_by_company_number(company_record.company_number)).to eq []
@@ -192,11 +194,11 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
             {
               index: {
                 _index: index,
-                _id: "01234567:36c99208e0c14294355583c965e4c3f3",
-                data: company_record_h,
-              },
-            },
-          ],
+                _id: '01234567:36c99208e0c14294355583c965e4c3f3',
+                data: company_record_h
+              }
+            }
+          ]
         ).and_return({})
 
         expect(subject.store([company_record])).to be true

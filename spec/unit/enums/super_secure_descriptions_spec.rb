@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/enums/super_secure_descriptions'
 
 RSpec.describe RegisterSourcesPsc::SuperSecureDescriptions do
