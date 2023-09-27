@@ -9,8 +9,7 @@ module RegisterSourcesPsc
   module Repositories
     class RegisteredOverseasRecordRepository < CompanyRecordRepository
       def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_OVERSEAS_RECORD_INDEX)
-        @client = client
-        @index = index
+        super(client, index)
       end
     end
   end
