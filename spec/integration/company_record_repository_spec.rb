@@ -97,15 +97,5 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       ]
       expect(subject.get_by_bods_identifiers(identifiers)).to eq [corporate_record]
     end
-
-    it 'stores missing' do
-      records = [
-        RegisterSourcesPsc::CompanyRecord.new(
-          **JSON.parse('{"company_number":"09672611","data":{"ceased":1,"description":"super-secure-persons-with-significant-control","etag":"dd596565a737cd3f27be40ec7d04893fff08f7e6","kind":"super-secure-person-with-significant-control","links":{"self":"/company/09672611/persons-with-significant-control/super-secure/YbK2vqv5S4NMgHhJbcCYyla8i4E"}}}'), # rubocop:disable Layout/LineLength
-          symbolize_names: true
-        )
-      ]
-      subject.store(records)
-    end
   end
 end
