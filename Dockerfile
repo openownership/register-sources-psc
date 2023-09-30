@@ -26,5 +26,3 @@ RUN bundle install
 COPY --chown=x:x . .
 #-------------------------------------------------------------------------------
 ENV PATH=/home/x/r/bin:$PATH
-
-ENTRYPOINT ["entrypoint-dev"]

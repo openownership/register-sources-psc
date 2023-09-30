@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -Eeuo pipefail
-
-bin/configure-dev-lib
-
-exec "$@"

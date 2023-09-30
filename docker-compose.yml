@@ -10,7 +10,6 @@ services:
       - sources
     restart: on-failure
     volumes:
-      - ${DC_SOURCES_PSC_LIB_REGISTER_COMMON:-.dockerempty}:/home/x/lib/register-common
       - ./.rubocop.yml:/home/x/r/.rubocop.yml
       - ./bin:/home/x/r/bin
       - ./Gemfile.lock:/home/x/r/Gemfile.lock
