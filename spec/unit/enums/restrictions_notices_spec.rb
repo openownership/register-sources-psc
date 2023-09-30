@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/enums/restrictions_notices'
 
 RSpec.describe RegisterSourcesPsc::RestrictionsNotices do

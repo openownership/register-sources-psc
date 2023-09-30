@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/types'
 
 require 'register_sources_psc/structs/corporate_entity'
@@ -52,7 +54,7 @@ module RegisterSourcesPsc
         CorporateEntityBeneficialOwnerKinds['corporate-entity-beneficial-owner'],
         IndividualBeneficialOwnerKinds['individual-beneficial-owner'],
         LegalPersonBeneficialOwnerKinds['legal-person-beneficial-owner'],
-        SuperSecureBeneficialOwnerKinds['super-secure-beneficial-owner'],
+        SuperSecureBeneficialOwnerKinds['super-secure-beneficial-owner']
       ].include? data.kind
     end
   end

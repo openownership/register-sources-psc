@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/types'
 
 require 'register_sources_psc/enums/corporate_entity_kinds'

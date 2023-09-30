@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/config/elasticsearch'
 
 module RegisterSourcesPsc
@@ -7,214 +9,216 @@ module RegisterSourcesPsc
         @client = client
       end
 
+      # rubocop:disable Naming/VariableNumber
       def create_es_index(es_index)
         client.indices.create index: es_index, body: {
           mappings: {
             properties: {
               company_number: {
-                type: "keyword",
+                type: 'keyword'
               },
               data: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   address: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       address_line_1: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       address_line_2: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       care_of: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       country: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       locality: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       postal_code: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       premises: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       region: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   ceased: {
-                    type: "boolean",
+                    type: 'boolean'
                   },
                   ceased_on: {
-                    type: "date",
+                    type: 'date'
                   },
                   country_of_residence: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   date_of_birth: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       day: {
-                        type: "integer",
+                        type: 'integer'
                       },
                       month: {
-                        type: "integer",
+                        type: 'integer'
                       },
                       year: {
-                        type: "integer",
-                      },
-                    },
+                        type: 'integer'
+                      }
+                    }
                   },
                   description: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   etag: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   identification: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       country_registered: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       legal_authority: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       legal_form: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       place_registered: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       registration_number: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   is_sanctioned: {
-                    type: "boolean",
+                    type: 'boolean'
                   },
                   kind: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   linked_psc_name: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   links: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       self: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       statement: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   name: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   name_elements: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       forename: {
-                        type: "text",
+                        type: 'text',
                         fields: {
                           raw: {
-                            type: "keyword",
-                          },
-                        },
+                            type: 'keyword'
+                          }
+                        }
                       },
                       other_forenames: {
-                        type: "text",
+                        type: 'text',
                         fields: {
                           raw: {
-                            type: "keyword",
-                          },
-                        },
+                            type: 'keyword'
+                          }
+                        }
                       },
                       surname: {
-                        type: "text",
+                        type: 'text',
                         fields: {
                           raw: {
-                            type: "keyword",
-                          },
-                        },
+                            type: 'keyword'
+                          }
+                        }
                       },
                       title: {
-                        type: "text",
+                        type: 'text',
                         fields: {
                           raw: {
-                            type: "keyword",
-                          },
-                        },
-                      },
-                    },
+                            type: 'keyword'
+                          }
+                        }
+                      }
+                    }
                   },
                   nationality: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   natures_of_control: {
-                    type: "keyword", # array
+                    type: 'keyword' # array
                   },
                   notified_on: {
-                    type: "date",
+                    type: 'date'
                   },
                   principal_office_address: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       address_line_1: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       address_line_2: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       care_of: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       country: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       locality: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       postal_code: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       premises: {
-                        type: "keyword",
+                        type: 'keyword'
                       },
                       region: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   restrictions_notice_withdrawal_reason: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   statement: {
-                    type: "keyword",
-                  },
-                },
-              },
-            },
-          },
+                    type: 'keyword'
+                  }
+                }
+              }
+            }
+          }
         }
       end
+      # rubocop:enable Naming/VariableNumber
 
       private
 

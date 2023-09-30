@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_psc/structs/date_of_birth'
 
 RSpec.describe RegisterSourcesPsc::DateOfBirth do
