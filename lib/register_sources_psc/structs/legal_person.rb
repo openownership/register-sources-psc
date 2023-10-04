@@ -18,7 +18,7 @@ module RegisterSourcesPsc
     attribute? :kind,               LegalPersonKinds
     attribute? :links,              Links
     attribute? :name,               Types::String
-    attribute? :natures_of_control, Types.Array(Descriptions).default([])
+    attribute? :natures_of_control, Types.Array(Descriptions).default([].freeze)
     attribute? :notified_on,        Types::Nominal::Date
   end
 end
