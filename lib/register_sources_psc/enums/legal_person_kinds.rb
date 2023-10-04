@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'register_sources_psc/types'
+require_relative '../types'
 
 module RegisterSourcesPsc
   LegalPersonKinds = Types::String.enum(

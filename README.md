@@ -25,8 +25,8 @@ As an initial setup stage, the index should be created:
 require 'register_sources_psc/services/es_index_creator'
 
 index_creator = RegisterSourcesPsc::Services::EsIndexCreator.new
-index_creator.create_es_index RegisterSourcesPsc::Config::ES_COMPANY_RECORD_INDEX
-index_creator.create_es_index RegisterSourcesPsc::Config::ES_OVERSEAS_RECORD_INDEX
+index_creator.create_index RegisterSourcesPsc::Config::ELASTICSEARCH_INDEX_COMPANY
+index_creator.create_index RegisterSourcesPsc::Config::ELASTICSEARCH_INDEX_OVERSEAS
 ```
 
 ## Testing
