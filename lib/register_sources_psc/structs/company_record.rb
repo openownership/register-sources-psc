@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
-require 'register_sources_psc/types'
-
-require 'register_sources_psc/structs/corporate_entity'
-require 'register_sources_psc/structs/individual'
-require 'register_sources_psc/structs/legal_person'
-require 'register_sources_psc/structs/statement'
-require 'register_sources_psc/structs/super_secure'
-
-require 'register_sources_psc/structs/corporate_entity_beneficial_owner'
-require 'register_sources_psc/structs/individual_beneficial_owner'
-require 'register_sources_psc/structs/legal_person_beneficial_owner'
-require 'register_sources_psc/structs/super_secure_beneficial_owner'
+require_relative '../types'
+require_relative 'corporate_entity'
+require_relative 'corporate_entity_beneficial_owner'
+require_relative 'individual'
+require_relative 'individual_beneficial_owner'
+require_relative 'legal_person'
+require_relative 'legal_person_beneficial_owner'
+require_relative 'statement'
+require_relative 'super_secure'
+require_relative 'super_secure_beneficial_owner'
 
 module RegisterSourcesPsc
   UnknownRecordKindError = Class.new(StandardError)
@@ -47,7 +45,7 @@ module RegisterSourcesPsc
     transform_keys(&:to_sym)
 
     attribute :company_number, Types::String.optional.default(nil)
-    attribute :data, CompanyRecordData
+    attribute :data,           CompanyRecordData
 
     def roe?
       [

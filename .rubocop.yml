@@ -22,7 +22,6 @@ RSpec/ExampleLength:
 RSpec/FilePath:
   Exclude:
     - spec/integration/company_record_repository_spec.rb
-    - spec/register_sources_psc.rb
     - spec/unit/enums/corporate_entity_kinds_spec.rb
     - spec/unit/enums/descriptions_spec.rb
     - spec/unit/enums/individual_kinds_spec.rb
@@ -34,6 +33,7 @@ RSpec/FilePath:
     - spec/unit/enums/statement_kinds_spec.rb
     - spec/unit/enums/super_secure_descriptions_spec.rb
     - spec/unit/enums/super_secure_kinds_spec.rb
+    - spec/unit/register_sources_psc.rb
     - spec/unit/repositories/company_record_repository_spec.rb
     - spec/unit/services/es_index_creator_spec.rb
     - spec/unit/structs/address_spec.rb

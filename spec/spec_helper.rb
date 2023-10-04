@@ -5,7 +5,6 @@ module RegisterSourcesPsc
 end
 
 require 'register_sources_psc'
-require 'register_sources_psc/config'
 require 'webmock/rspec'
 
 RSpec.configure do |config|
