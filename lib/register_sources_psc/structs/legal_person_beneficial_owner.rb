@@ -19,7 +19,7 @@ module RegisterSourcesPsc
     attribute? :kind,                     LegalPersonBeneficialOwnerKinds
     attribute? :links,                    Links
     attribute? :name,                     Types::String
-    attribute? :natures_of_control,       Types.Array(Descriptions).default([])
+    attribute? :natures_of_control,       Types.Array(Descriptions).default([].freeze)
     attribute? :notified_on,              Types::Nominal::Date
     attribute? :principal_office_address, Address
   end
