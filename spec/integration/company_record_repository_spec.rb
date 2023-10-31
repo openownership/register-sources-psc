@@ -87,8 +87,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       expect(subject.get(corporate_record.data.etag)).to eq corporate_record
 
       # When records do not exist
-      expect(subject.get("missing")).to be_nil
-      expect(subject.list_by_company_number("missing")).to eq []
+      expect(subject.get('missing')).to be_nil
+      expect(subject.list_by_company_number('missing')).to eq []
     end
   end
 end

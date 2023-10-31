@@ -150,8 +150,8 @@ module RegisterSourcesPsc
             must: [
               {
                 term: {
-                  _index: index,
-                },
+                  _index: index
+                }
               },
               {
                 bool: {
@@ -201,11 +201,11 @@ module RegisterSourcesPsc
                         ]
                       }
                     }
-                  end,
-                },
-              },
-            ],
-          },
+                  end
+                }
+              }
+            ]
+          }
         }
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -228,7 +228,7 @@ module RegisterSourcesPsc
         SearchResults.new(
           mapped.sort_by(&:score).reverse,
           total_count:,
-          aggs: results['aggregations'],
+          aggs: results['aggregations']
         )
       end
 

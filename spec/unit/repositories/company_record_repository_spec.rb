@@ -224,11 +224,10 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
     end
   end
 
-  # rubocop:disable RSpec/ExampleLength
   describe '#build_get_by_bods_identifiers' do
     it 'builds query for searching by bods identifiers' do
       identifiers = [
-        BodsIdentifier.new('12345', 'GB Persons Of Significant Control Register'),
+        BodsIdentifier.new('12345', 'GB Persons Of Significant Control Register')
       ]
 
       query = subject.build_get_by_bods_identifiers(identifiers)
@@ -238,8 +237,8 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
           must: [
             {
               term: {
-                _index: index,
-              },
+                _index: index
+              }
             },
             {
               bool: {
@@ -249,32 +248,31 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
                       must: [
                         {
                           nested: {
-                            path: "data.links",
+                            path: 'data.links',
                             query: {
                               bool: {
                                 must: [
                                   {
                                     match: {
                                       'data.links.self': {
-                                        query: "12345",
-                                      },
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
+                                        query: '12345'
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
       )
     end
   end
-  # rubocop:enable RSpec/ExampleLength
 end
