@@ -2,6 +2,8 @@
 
 require 'register_sources_psc/repositories/company_record_repository'
 
+BodsIdentifier = Struct.new(:id, :schemeName)
+
 RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
   subject { described_class.new(client:, index:) }
 
@@ -219,6 +221,58 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
 
         expect { subject.store([company_record]) }.to raise_error(described_class::ElasticsearchError)
       end
+    end
+  end
+
+  describe '#build_get_by_bods_identifiers' do
+    it 'builds query for searching by bods identifiers' do
+      identifiers = [
+        BodsIdentifier.new('12345', 'GB Persons Of Significant Control Register')
+      ]
+
+      query = subject.build_get_by_bods_identifiers(identifiers)
+
+      expect(query).to eq(
+        bool: {
+          must: [
+            {
+              term: {
+                _index: index
+              }
+            },
+            {
+              bool: {
+                should: [
+                  {
+                    bool: {
+                      must: [
+                        {
+                          nested: {
+                            path: 'data.links',
+                            query: {
+                              bool: {
+                                must: [
+                                  {
+                                    match: {
+                                      'data.links.self': {
+                                        query: '12345'
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      )
     end
   end
 end

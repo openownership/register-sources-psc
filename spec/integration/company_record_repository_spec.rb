@@ -89,13 +89,6 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
       # When records do not exist
       expect(subject.get('missing')).to be_nil
       expect(subject.list_by_company_number('missing')).to eq []
-
-      # get identifiers
-      identifiers = [
-        OpenStruct.new(id: corporate_record.data.links[:self], # rubocop:disable Style/OpenStructUse
-                       schemeName: 'GB Persons Of Significant Control Register')
-      ]
-      expect(subject.get_by_bods_identifiers(identifiers)).to eq [corporate_record]
     end
   end
 end
