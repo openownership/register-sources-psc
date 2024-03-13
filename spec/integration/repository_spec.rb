@@ -2,14 +2,14 @@
 
 require 'elasticsearch'
 require 'ostruct'
-require 'register_sources_psc/repositories/company_record_repository'
+require 'register_sources_psc/repository'
 require 'register_sources_psc/services/es_index_creator'
 require 'register_sources_psc/structs/company_record'
 
-RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
+RSpec.describe RegisterSourcesPsc::Repository do
   subject { described_class.new(client: es_client, index:) }
 
-  let(:index) { SecureRandom.uuid }
+  let(:index) { "tmp-#{SecureRandom.uuid}" }
   let(:es_client) { Elasticsearch::Client.new }
 
   let(:corporate_record) do
@@ -58,10 +58,12 @@ RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
   end
 
   before do
-    index_creator = RegisterSourcesPsc::Services::EsIndexCreator.new(
-      client: es_client
-    )
+    index_creator = RegisterSourcesPsc::Services::EsIndexCreator.new(client: es_client)
     index_creator.create_index(index)
+  end
+
+  after do
+    es_client.indices.delete(index:)
   end
 
   describe '#store' do

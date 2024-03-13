@@ -11,52 +11,24 @@ Metrics/ClassLength:
   Enabled: false
 Metrics/MethodLength:
   Enabled: false
+RSpec/FilePath:
+  Enabled: false
 Style/Documentation:
   Enabled: false
 #-------------------------------------------------------------------------------
 RSpec/ExampleLength:
   Exclude:
-    - spec/integration/company_record_repository_spec.rb
-    - spec/unit/repositories/company_record_repository_spec.rb
+    - spec/integration/repository_spec.rb
+    - spec/unit/repository_spec.rb
     - spec/unit/structs/psc_stream_spec.rb
-RSpec/FilePath:
-  Exclude:
-    - spec/integration/company_record_repository_spec.rb
-    - spec/unit/enums/corporate_entity_kinds_spec.rb
-    - spec/unit/enums/descriptions_spec.rb
-    - spec/unit/enums/individual_kinds_spec.rb
-    - spec/unit/enums/legal_person_kinds_spec.rb
-    - spec/unit/enums/psc_stream_event_types_spec.rb
-    - spec/unit/enums/psc_stream_resource_kinds_spec.rb
-    - spec/unit/enums/restrictions_notices_spec.rb
-    - spec/unit/enums/statement_descriptions_spec.rb
-    - spec/unit/enums/statement_kinds_spec.rb
-    - spec/unit/enums/super_secure_descriptions_spec.rb
-    - spec/unit/enums/super_secure_kinds_spec.rb
-    - spec/unit/register_sources_psc.rb
-    - spec/unit/repositories/company_record_repository_spec.rb
-    - spec/unit/services/es_index_creator_spec.rb
-    - spec/unit/structs/address_spec.rb
-    - spec/unit/structs/company_record_spec.rb
-    - spec/unit/structs/corporate_entity_spec.rb
-    - spec/unit/structs/date_of_birth_spec.rb
-    - spec/unit/structs/identification_spec.rb
-    - spec/unit/structs/individual_spec.rb
-    - spec/unit/structs/legal_person_spec.rb
-    - spec/unit/structs/links_spec.rb
-    - spec/unit/structs/name_elements_spec.rb
-    - spec/unit/structs/psc_stream_event_spec.rb
-    - spec/unit/structs/psc_stream_spec.rb
-    - spec/unit/structs/statement_spec.rb
-    - spec/unit/structs/super_secure_spec.rb
 RSpec/MessageSpies:
   Exclude:
-    - spec/unit/repositories/company_record_repository_spec.rb
+    - spec/unit/repository_spec.rb
     - spec/unit/services/es_index_creator_spec.rb
 RSpec/MultipleExpectations:
   Exclude:
-    - spec/integration/company_record_repository_spec.rb
-    - spec/unit/repositories/company_record_repository_spec.rb
+    - spec/integration/repository_spec.rb
+    - spec/unit/repository_spec.rb
     - spec/unit/structs/address_spec.rb
     - spec/unit/structs/company_record_spec.rb
     - spec/unit/structs/corporate_entity_spec.rb
@@ -71,16 +43,16 @@ RSpec/MultipleExpectations:
     - spec/unit/structs/super_secure_spec.rb
 RSpec/MultipleMemoizedHelpers:
   Exclude:
-    - spec/integration/company_record_repository_spec.rb
+    - spec/integration/repository_spec.rb
 RSpec/NamedSubject:
   Exclude:
-    - spec/integration/company_record_repository_spec.rb
-    - spec/unit/repositories/company_record_repository_spec.rb
+    - spec/integration/repository_spec.rb
+    - spec/unit/repository_spec.rb
     - spec/unit/services/es_index_creator_spec.rb
 RSpec/StubbedMock:
   Exclude:
-    - spec/unit/repositories/company_record_repository_spec.rb
+    - spec/unit/repository_spec.rb
 RSpec/VerifiedDoubles:
   Exclude:
-    - spec/unit/repositories/company_record_repository_spec.rb
+    - spec/unit/repository_spec.rb
     - spec/unit/services/es_index_creator_spec.rb

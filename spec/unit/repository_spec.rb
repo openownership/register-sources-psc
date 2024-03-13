@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'register_sources_psc/repositories/company_record_repository'
+require 'register_sources_psc/repository'
 
 BodsIdentifier = Struct.new(:id, :schemeName)
 
-RSpec.describe RegisterSourcesPsc::Repositories::CompanyRecordRepository do
+RSpec.describe RegisterSourcesPsc::Repository do
   subject { described_class.new(client:, index:) }
 
   let(:client) { double 'client' }
